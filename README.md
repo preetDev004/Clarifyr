@@ -7,7 +7,7 @@ Name | Role | Github | Email
 Vladyslav Huziienko | Back-end / AI Dev | Vlad005 |  [vhuziienko@myseneca.ca](mailto:vhuziienko@myseneca.ca)  
 Daniel Krause | Front-end Dev / Scrum Specialist | codesend | [dkrause1@myseneca.ca](mailto:dkrause1@myseneca.ca)  
 Maksym Volkovynskyi | Back-end / DBM Dev | callmecposu | [mvolkovynskyi@myseneca.ca](mailto:mvolkovynskyi@myseneca.ca)  
-Preet Dineshkumar Patel | Front-end Dev | preetDev004 | [Pdpatel51@myseneca.ca](mailto:Pdpatel51@myseneca.ca) 
+Preet Dineshkumar Patel | Front-end Dev / UI-UX Designer | preetDev004 | [Pdpatel51@myseneca.ca](mailto:Pdpatel51@myseneca.ca) 
 
 ## Tech Stack
 
