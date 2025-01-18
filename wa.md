@@ -1,56 +1,205 @@
-# Group_16
 
-## Developers
+# Team Working Agreement - Group 16
 
-Name | Role | Github | Email   
---- | --- | --- | ---   
-Vladyslav Huziienko | Back-end / AI Dev | Vlad005 |  [vhuziienko@myseneca.ca](mailto:vhuziienko@myseneca.ca)  
-Daniel Krause | Front-end Dev / Scrum Specialist | codesend | [dkrause1@myseneca.ca](mailto:dkrause1@myseneca.ca)  
-Maksym Volkovynskyi | Back-end / DBM Dev | callmecposu | [mvolkovynskyi@myseneca.ca](mailto:mvolkovynskyi@myseneca.ca)  
-Preet Dineshkumar Patel | Front-end Dev / UI-UX Designer | preetDev004 | [Pdpatel51@myseneca.ca](mailto:Pdpatel51@myseneca.ca) 
+Last Updated: January 17, 2025
 
-## Project Description
+  
 
-Our project is a service for other businesses to create AI customer support bots. Our service provides an intuitive user interface with a minimal learning curve to create, customize, and publish customer support bots. Each bot will rely on a set of expert documents, so all the answers are aligned with the business information of the clients. Whenever the bot is created, it can be embedded in the target website by simply inserting one line of code into its codebase. As easy as that, the chatbot will become ready for business’ customers’ use.
+## Core Working Hours & Availability
 
-### Chatbot creation
+1. Team members will be available on `Wednesday` core hours: `3:50 PM - 6:00 PM EST`
 
-The chatbot creation process starts with users uploading their expertise materials, which can include documents, raw text, or parsed website content. Assuming they haven't exceeded their chatbot limit, users can proceed to create a new chatbot by providing essential details like the bot's name and welcome message, then selecting which of their uploaded expertise materials to use. The customization continues as users personalize their chatbot's appearance by choosing five colors for the theme and uploading a bot image, while also selecting specific behavior traits to define the bot's personality. For security, users specify which domains are allowed to host their chatbot. The process concludes with users receiving an embedment link that they can use to integrate their customized chatbot into their website.
+2. Maximum response time to team messages: `6 hours` during working days
 
-### Embedded chat on client website
+3. Team members will notify the group at least `24 hours` in advance of any planned absences
 
-The interface launches with a chat icon that automatically restores previous chats for returning users or initializes new sessions for first-time visitors. The system processes user messages through an AI backend while rendering responses seamlessly in the frontend chat window. Users can interact with the chat until they choose to end their session.
+4. Weekend work is optional but should be communicated if planned
 
-### Chat usage statistics
+  
 
-The chat usage statistics dashboard displays key metrics about chatbot performance, including total conversations, message volumes, user engagement rates, and popular topics. Users can track their chatbot's effectiveness through metrics like average response times and resolution rates, helping them optimize their customer service experience.
+## Communication
 
-### Subscription plans (future)
+1. Primary Channels:
 
-We offer four subscription plans to meet diverse user needs. The free plan lets users test our service with basic features. Plus and Pro plans provide increasing chat and message limits, with Pro offering more capabilities at a higher price. For large organizations, our Enterprise plan allows custom limits and personalized pricing through direct negotiation. This flexible approach ensures every user finds a suitable option matching their specific requirements and budget.
+- GitHub Issues for task tracking and technical discussions
 
-### Offline Human Chat Option (future)
+- Discord and Telegram for daily communication and quick questions
 
-When an AI can't solve a user's problem completely, the system offers a simple backup plan of connecting with a real human support agent. If human support is available and the website allows it, users can smoothly switch from AI to human assistance. This ensures that complex or unique issues get resolved quickly and effectively, providing a reliable support experience.
+- Email for formal communications with Professor
 
-## Tech Stack
+  
 
-### Backend
+2. Meeting Schedule:
 
-The website will consume our own API, which is to be developed with Python Flask. To leverage AI technology, we are going to utilize OpenAI API to generate embeddings and chatbot responses.
+- Weekly Meetings & Retro: Friday 6:30PM
 
-### Frontend
+  
 
-The website’s UI is to be developed with Next.js. Frontend is also going to rely on usage of Tailwind CSS styling framework and shadcnUI component library.
+## Development Practices
 
-### Database
+1. Code Management:
 
-To make it possible for our team to work with the same data set coming from a single source of truth, we have chosen to use the cloud MongoDB Atlas database for storing persistent data.
+- All code changes must be made through pull requests
 
-### Development Tools
+- Minimum of 1 reviewer required for PR approval **(Don't merge your own PRs)**
 
-During the development process, our team is going to utilize Visual Studio Code for an IDE, git for a version control system, Postman for an API testing framework, Prettier and ESLint for automatic code formatting and linting, and Github Actions for automated testing. 
+- PRs should be reviewed within 24 hours
 
-### Deployment
+- Use meaningful commit messages following conventional commits
 
-Our app’s frontend and backend applications are going to be deployed on a single VPS provided by Digital Ocean. The applications are going to be individually packaged with Docker and run in a bundle with Docker Compose.
+  
+
+2. Branch Strategy:
+
+- Main branch is protected
+
+- Feature branches named as: feature/description
+
+- Bug fixes named as: fix/description
+
+  
+
+3. Code Standards:
+
+- Follow ESLint and Prettier configurations
+
+- Write meaningful comments for complex logic
+
+- Include documentation for API endpoints
+
+- Follow agreed-upon naming conventions
+
+  
+
+## Task Management
+
+1. Sprint Planning:
+
+- Three-week sprint cycles
+
+- Tasks must have clear acceptance criteria
+
+- Maximum of 1-2 active tasks/issues per person
+
+  
+
+2. Task Updates:
+
+- Update task status once a week
+
+- Block impediments must be communicated immediately
+
+- Document technical decisions in PR descriptions
+
+  
+
+## Roles & Responsibilities
+
+1. Vladyslav Huziienko:
+
+- Back-end development
+
+- AI integration implementation
+
+- API documentation
+
+  
+
+2. Daniel Krause:
+
+- Front-end development
+
+- Scrum process management
+
+- Sprint planning facilitation
+
+- Quality Assurance and Integration
+
+
+
+
+  
+
+3. Maksym Volkovynskyi:
+
+- Database architecture
+
+- Lead Back-end development
+
+- Performance optimization
+
+  
+
+4. Preet Dineshkumar Patel:
+
+- UI/UX design
+
+- Lead Front-end development
+
+- Component library management
+
+  
+
+## Quality Assurance
+
+1. Testing Requirements:
+
+- Integration tests for API endpoints
+
+- All tests must pass before merge
+
+  
+
+2. Documentation:
+
+- README files must be kept updated
+
+- API documentation must be comprehensive
+
+- Include setup instructions for local development
+
+  
+
+## Conflict Resolution
+
+1. Technical Disagreements:
+
+- Discussion in team meeting
+
+- Decision by consensus
+
+- Document decision and reasoning
+
+  
+
+2. Process Issues:
+
+- Raise in retro meetings
+
+- Create action items for improvement
+
+- Follow up in next sprint
+
+  
+
+## Agreement Updates
+
+1. This agreement can be amended during sprint retrospectives
+
+2. Changes require agreement from all team members
+
+3. Keep version history in project documentation
+
+  
+
+## Team Member Agreement
+
+We, the undersigned, agree to follow this Working Agreement:
+
+1. ✅ Vladyslav Huziienko
+
+2. ✅ Daniel Krause
+
+3. ✅ Preet Dineshkumar Patel
+
+4. ✅ Maksym Volkovynskyi
