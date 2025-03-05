@@ -1,64 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Lexend:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --background: 187 14% 97%;
+    --foreground: 187 67% 8%;
+
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 187 67% 8%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
+    --popover-foreground: 187 67% 8%;
+
+    --primary: 176 65% 29%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+
+    --secondary: 158 16% 49%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
+
+    --muted: 176 25% 94%;
+    --muted-foreground: 187 5% 45%;
+
+    --accent: 26 83% 77%;
+    --accent-foreground: 187 65% 6%;
+
+    --destructive: 358 84% 56%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+
+    --border: 176 10% 85%;
+    --input: 176 10% 85%;
+    --ring: 176 65% 29%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 187 10% 25%;
+    --sidebar-primary: 187 10% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 187 5% 96%;
+    --sidebar-accent-foreground: 187 10% 10%;
+    --sidebar-border: 176 10% 90%;
+    --sidebar-ring: 176 90% 58%;
+  }
+
+  .dark {
+    --background: 187 67% 8%;
+    --foreground: 0 0% 94%;
+
+    --card: 187 67% 10%;
+    --card-foreground: 0 0% 94%;
+
+    --popover: 187 67% 10%;
+    --popover-foreground: 0 0% 94%;
+
+    --primary: 176 65% 29%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 158 16% 45%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 187 25% 15%;
+    --muted-foreground: 0 0% 80%;
+
+    --accent: 26 83% 70%;
+    --accent-foreground: 187 67% 8%;
+
+    --destructive: 358 84% 40%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 187 20% 20%;
+    --input: 187 20% 20%;
+    --ring: 176 65% 25%;
+
+    --sidebar-background: 187 67% 10%;
+    --sidebar-foreground: 176 10% 90%;
+    --sidebar-primary: 176 65% 29%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 187 20% 20%;
+    --sidebar-accent-foreground: 176 10% 90%;
+    --sidebar-border: 187 20% 20%;
+    --sidebar-ring: 176 65% 29%;
   }
 }
 
@@ -66,15 +90,102 @@ body {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-display;
   }
 }
 
+@layer utilities {
+  .glass-card {
+    @apply border border-white/20 bg-white/80 backdrop-blur-md dark:border-white/10 dark:bg-custom-darkblue/40;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-custom-teal via-custom-sage to-custom-peach bg-clip-text text-transparent;
+  }
+
+  .hover-scale {
+    @apply transition-all duration-300 hover:scale-105;
+  }
+
+  .text-shadow {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  .section-padding {
+    @apply px-4 py-12 sm:px-6 md:px-8 md:py-20;
+  }
+
+  .btn-primary {
+    @apply rounded-lg bg-custom-teal px-5 py-2.5 font-medium text-white shadow-md transition-all duration-300 hover:bg-custom-sage hover:shadow-lg;
+  }
+
+  .btn-secondary {
+    @apply rounded-lg bg-custom-sage/10 px-5 py-2.5 font-medium text-custom-sage transition-all duration-300 hover:bg-custom-sage/20 dark:text-gray-200;
+  }
+  .btn-secondary:hover {
+    @apply hover:bg-custom-sage/20 hover:text-custom-sage hover:dark:text-gray-200;
+  }
+
+  .btn-outline {
+    @apply rounded-lg border border-custom-sage bg-transparent px-5 py-2.5 font-medium text-custom-sage transition-all duration-300 hover:bg-custom-sage/10 dark:text-custom-sage;
+  }
+
+  .btn-accent {
+    @apply rounded-lg bg-custom-peach px-5 py-2.5 font-medium text-custom-darkblue shadow-md transition-all duration-300 hover:bg-custom-coral hover:shadow-lg;
+  }
+
+  .spotlight {
+    @apply absolute left-1/2 top-0 -z-10 h-[40vh] w-full bg-gradient-radial from-custom-teal/20 to-transparent blur-2xl dark:from-custom-teal/10;
+  }
+}
+
+.price-card {
+  @apply relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:shadow-md;
+}
+
+.price-card.popular {
+  @apply border-custom-teal shadow-lg dark:border-custom-teal/70;
+}
+
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-muted;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/40;
+}
+
 /* Clerk Watermark remove */
-.cl-internal-1dauvpw{
+.cl-internal-1dauvpw,
+.cl-internal-1hp5nqm {
   display: none;
 }
-.grainy {
-  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAElBMVEUAAAD8/vz08vT09vT8+vzs7uxH16TeAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAOxAAADsQBlSsOGwAAAuFJREFUOI0Vk+3NLiEIRG1B8ClAYAsQ2AIEt4D9ePtv5Xp/mZgYJ2fOFJKEfInkVWY2aglmQFkimRTV7MblYyVqD7HXyhKsSuPX12MeDhRHLtGvRG+P+B/S0Vu4OswR9tmvwNPyhdCDbVayJGads/WiUWcjCvCnruTBNHS9gmX2VzVbk7ZvB1gb1hkWFGl+A/n+/FowcO34U/XvKqZ/fHY+6vgRfU92XrOBUbGeeDfQmjWjdrK+frc6FdGReQhfSF5JvR29O2QrfNw1huTwlgsyXLo0u+5So82sgv7tsFZR2nxB6lXiquHrfD8nfYZ9SeT0LiuvSoVrxGY16pCNRZKqvwWsn5OHypPBELzohMCaRaa0ceTHYqe7X/gfJEEtKFbJpWoNqO+aS1cuTykGPpK5Ga48m6L3NefTr013KqYBQu929iP1oQ/7UwSR+i3zqruUmT84qmhzLpxyj7pr9kg7LKvqaXxZmdpn+6o8sHqSqojy02gU3U8q9PnpidiaLks0mbMYz+q2uVXsoBQ8bfURULYxRgZVYCHMv9F4OA7qxT2NPPpvGQ/sTDH2yznKh7E2AcErfcNsaIoN1izzbJiaY63x4QjUFdBSvDCvugPpu5xDny0jzEeuUQbcP1aGT9V90uixngTRLYNEIIZ6yOF1H8tm7rj2JxiefsVy53zGVy3ag5uuPsdufYOzYxLRxngKe7nhx3VAq54pmz/DK9/Q3aDam2Yt3hNXB4HuU87jKNd/CKZn77Qdn5QkXPfqSkhk7hGOXXB+7v09KbBbqdvxGqa0AqfK/atIrL2WXdAgXAJ43Wtwe/aIoacXezeGPMlhDOHDbSfHnaXsL2QzbT82GRwZuezdwcoWzx5pnOnGMUdHuiY7lhdyWzWiHnucLZQxYStMJbtcydHaQ6vtMbe0AcDbxG+QG14AL94xry4297xpy9Cpf1OoxZ740gHDfrK+gtsy0xabwJmfgtCeii79B6aj0SJeLbd7AAAAAElFTkSuQmCC");
+.cl-formButtonPrimary {
+  background-color: teal !important;
+}
+.cl-formButtonPrimary:hover {
+  background-color: rgba(1, 97, 97, 0.853) !important;
 }
