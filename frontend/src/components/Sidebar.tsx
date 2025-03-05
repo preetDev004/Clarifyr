@@ -58,7 +58,6 @@ export function Sidebar() {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  useEffect(() => console.log(user), [user]);
   return (
     <>
       {/* Mobile menu button - only visible on small screens */}
