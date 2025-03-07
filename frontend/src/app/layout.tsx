@@ -20,8 +20,9 @@ const lexend = Lexend({
   display: 'swap',
 });
 export const metadata: Metadata = {
-  title: "PragyAI",
-  description: "Take your Business to another level with PragyAI's AI powered customized Chat Bot!",
+  title: 'PragyAI',
+  description:
+    "Take your Business to another level with PragyAI's AI powered customized Chat Bot!",
 };
 
 export default function RootLayout({

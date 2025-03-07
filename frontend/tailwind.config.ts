@@ -66,7 +66,6 @@ export default {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-        // New custom color scheme based on provided colors
         custom: {
           darkblue: '#071E22',
           teal: '#1D7874',
@@ -158,6 +157,22 @@ export default {
             transform: 'translate(-50%,-40%) scale(1)',
           },
         },
+        marquee: {
+          from: {
+            transform: 'translateX(0)',
+          },
+          to: {
+            transform: 'translateX(calc(-100% - var(--gap)))',
+          },
+        },
+        'marquee-vertical': {
+          from: {
+            transform: 'translateY(0)',
+          },
+          to: {
+            transform: 'translateY(calc(-100% - var(--gap)))',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -168,6 +183,8 @@ export default {
         float: 'float 5s ease-in-out infinite',
         'pulse-slow': 'pulse-slow 3s ease-in-out infinite',
         spotlight: 'spotlight 2s ease forwards 0.5s',
+        marquee: 'marquee var(--duration) infinite linear',
+        'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
