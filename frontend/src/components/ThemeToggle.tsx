@@ -1,37 +1,31 @@
-import { useEffect, useState } from 'react';
+'use client';
+
+import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.classList.toggle('dark', savedTheme === 'dark');
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
+    setMounted(true);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-  };
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <button
-      onClick={toggleTheme}
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       className="rounded-full bg-secondary/10 p-2 text-secondary transition-colors hover:bg-secondary/20 dark:text-secondary-foreground"
       aria-label="Toggle theme"
     >
       {theme === 'light' ? (
         <Moon className="text-black" size={20} />
       ) : (
-        <Sun size={20} />
+        <Sun className="text-white" size={20} />
       )}
     </button>
   );

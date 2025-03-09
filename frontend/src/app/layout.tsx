@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ClerkProvider } from '@clerk/nextjs';
+import { ThemeProvider } from 'next-themes';
 // In app/layout.tsx (for App Router) or _app.tsx (for Pages Router)
 import { Inter, Lexend } from 'next/font/google';
 
@@ -32,12 +33,20 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
+          className={`${inter.variable} ${lexend.variable} antialiased`}
           suppressHydrationWarning
-          className={`${inter.variable} ${lexend.variable} light:bg-muted antialiased`}
         >
-          {children}
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="pragyai-theme"
+          >
+            {children}
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
