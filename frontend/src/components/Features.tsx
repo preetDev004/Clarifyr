@@ -6,15 +6,15 @@ import {
   MessageSquareDot,
 } from 'lucide-react';
 
-import { BentoCard, BentoGrid } from '@/components/magicui/bento-grid';
-import { Marquee } from '@/components/magicui/marquee';
+import { BentoCard, BentoGrid } from '@/components/magicui/landing/bento-grid';
+import { Marquee } from '@/components/magicui/landing/marquee';
 import { cn } from '@/lib/utils';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import Badge from './Badge';
-import UsageFeature from './magicui/usage-stats';
-import { AnimatedBeamMultipleOutput } from './ui/AnimatedBeamMultipleOutput';
-import { AnimatedPop } from './ui/AnimatedPop';
+import UsageFeature from './magicui/landing/usage-stats';
+import { AnimatedBeamMultipleOutput } from './ui/landing/AnimatedBeamMultipleOutput';
+import { AnimatedPop } from './ui/landing/AnimatedPop';
 
 const files = [
   {
@@ -110,7 +110,7 @@ const features = [
   },
 ];
 
-export function BentoDemo() {
+export function Features() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-5% 0px' });
   return (

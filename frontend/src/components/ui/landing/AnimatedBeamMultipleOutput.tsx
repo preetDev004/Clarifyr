@@ -3,7 +3,7 @@
 import React, { forwardRef, useRef } from 'react';
 
 import { cn } from '@/lib/utils';
-import { AnimatedBeam } from '@/components/magicui/animated-beam';
+import { AnimatedBeam } from '@/components/magicui/landing/animated-beam';
 import Image from 'next/image';
 
 const Circle = forwardRef<

@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { AnimatedList } from '@/components/magicui/animated-list';
+import { AnimatedList } from '@/components/magicui/landing/animated-list';
 
 interface Item {
   sender: string;

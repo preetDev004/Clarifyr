@@ -1,4 +1,4 @@
-import { BentoDemo } from '@/components/Features';
+import { Features } from '@/components/Features';
 import Hero from '@/components/Hero';
 import Navbar from '@/components/Navbar';
 
@@ -7,7 +7,7 @@ export default function Home() {
     <div>
       <Navbar />
       <Hero />
-      <BentoDemo />
+      <Features />
     </div>
   );
 }

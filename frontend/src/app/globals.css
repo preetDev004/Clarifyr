@@ -6,6 +6,7 @@
 
 @layer base {
   :root {
+    overflow-x: hidden;
     --background: 187 14% 97%;
     --foreground: 187 67% 8%;
 
@@ -37,13 +38,13 @@
     --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 187 10% 25%;
-    --sidebar-primary: 187 10% 10%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 187 5% 96%;
-    --sidebar-accent-foreground: 187 10% 10%;
-    --sidebar-border: 176 10% 90%;
-    --sidebar-ring: 176 90% 58%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -75,14 +76,14 @@
     --input: 187 20% 20%;
     --ring: 176 65% 25%;
 
-    --sidebar-background: 187 67% 10%;
-    --sidebar-foreground: 176 10% 90%;
-    --sidebar-primary: 176 65% 29%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 187 20% 20%;
-    --sidebar-accent-foreground: 176 10% 90%;
-    --sidebar-border: 187 20% 20%;
-    --sidebar-ring: 176 65% 29%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -200,4 +201,13 @@
 }
 .cl-formButtonPrimary:hover {
   background-color: rgba(1, 97, 97, 0.853) !important;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

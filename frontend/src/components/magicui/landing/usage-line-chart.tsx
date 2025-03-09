@@ -6,7 +6,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart';
+} from '@/components/ui/landing/chart';
 
 const chartData = [
   { month: 'January', Users: 105 },

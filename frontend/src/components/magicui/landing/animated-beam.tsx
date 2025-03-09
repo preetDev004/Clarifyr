@@ -31,8 +31,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   fromRef,
   toRef,
   curvature = 0,
-  reverse = false, // Include the reverse prop
-  duration = Math.random() * 3 + 4,
+  reverse = false,
+  duration = 5,
   delay = 0,
   pathColor = 'gray',
   pathWidth = 2,
@@ -45,8 +45,13 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   endYOffset = 0,
 }) => {
   const id = useId();
+  const [mounted, setMounted] = useState(false);
   const [pathD, setPathD] = useState('');
   const [svgDimensions, setSvgDimensions] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Calculate the gradient coordinates based on the reverse prop
   const gradientCoordinates = reverse
@@ -64,6 +69,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       };
 
   useEffect(() => {
+    if (!mounted) return;
+
     const updatePath = () => {
       if (containerRef.current && fromRef.current && toRef.current) {
         const containerRect = containerRef.current.getBoundingClientRect();
@@ -92,11 +99,8 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
     };
 
     // Initialize ResizeObserver
-    const resizeObserver = new ResizeObserver((entries) => {
-      // For all entries, recalculate the path
-      entries.forEach(() => {
-        updatePath();
-      });
+    const resizeObserver = new ResizeObserver(() => {
+      updatePath();
     });
 
     // Observe the container element
@@ -112,6 +116,7 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
       resizeObserver.disconnect();
     };
   }, [
+    mounted,
     containerRef,
     fromRef,
     toRef,
@@ -121,6 +126,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
     endXOffset,
     endYOffset,
   ]);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <svg

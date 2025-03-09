@@ -9,37 +9,47 @@ import { SignedIn, SignedOut } from '@clerk/nextjs';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
+    // Set initial scroll state
+    handleScroll();
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <nav
       className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? 'bg-white py-3 shadow-sm backdrop-blur-lg dark:bg-custom-darkblue'
+          ? 'bg-white bg-opacity-75 py-3 shadow-sm backdrop-blur-lg backdrop-filter dark:bg-custom-darkblue dark:bg-opacity-75'
           : 'bg-transparent py-5'
       }`}
     >
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
-          <a href="" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Image
               src="/logo.svg"
               alt="Pragyai"
               className="h-8 w-8 sm:h-[45px] sm:w-[45px]"
               width={45}
               height={45}
+              priority
             />
-            <span className="bg-gradient-to-r from-custom-darkblue to-custom-teal bg-clip-text font-display text-xl font-bold text-transparent dark:from-white dark:to-white sm:text-2xl">
+            <span className="bg-gradient-to-r from-custom-darkblue to-custom-teal bg-clip-text font-display text-xl font-bold text-transparent transition-colors dark:from-white dark:to-white sm:text-2xl">
               PragyAI
             </span>
-          </a>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden items-center gap-4 md:flex lg:gap-8">
@@ -73,6 +83,7 @@ const Navbar = () => {
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="rounded-lg p-2 text-foreground transition-colors hover:bg-muted"
+                aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -83,9 +94,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`absolute left-0 top-full w-full bg-white/90 shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out dark:bg-custom-darkblue/90 md:hidden ${
+        className={`absolute left-0 top-full w-full overflow-hidden bg-white/80 shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out dark:bg-custom-darkblue/90 md:hidden ${
           isOpen ? 'max-h-[400px] opacity-100' : 'invisible max-h-0 opacity-0'
-        } overflow-hidden`}
+        }`}
       >
         <div className="container mx-auto flex flex-col gap-4 px-4 py-4">
           <a

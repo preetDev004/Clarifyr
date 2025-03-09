@@ -2,14 +2,15 @@
 import Image from 'next/image';
 import { TESTIMONIALS } from '../../constants';
 import Badge from './Badge';
-import { WordRotate } from './magicui/word-rotate';
+import { WordRotate } from './magicui/landing/word-rotate';
 import { motion } from 'framer-motion';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Button } from './ui/Button';
 
 export default function Hero() {
+  const router = useRouter();
   return (
-    <motion.section
+    <motion.div
       initial={{ opacity: 0, y: 10 }} // Start slightly lower and hidden
       animate={{ opacity: 1, y: 0 }} // Animate to full opacity at original position
       transition={{ duration: 0.5, ease: 'easeOut' }} // Smooth, quick transition
@@ -18,20 +19,22 @@ export default function Hero() {
       <div className="flex flex-col items-center justify-between lg:flex-row">
         <div className="relative z-10 mb-10 flex flex-col lg:mb-0 lg:w-1/2">
           <Badge border content={'🚀 Business Made Easy'} />
-          <h1 className="mb-6 mt-8 bg-gradient-to-r from-custom-teal via-custom-darkblue to-custom-sage bg-clip-text font-display text-4xl font-bold text-transparent dark:from-white dark:to-white sm:text-5xl">
-            AI-Powered
+          <div className="mb-6 mt-8">
+            <h1 className="bg-gradient-to-r from-custom-teal via-custom-darkblue to-custom-sage bg-clip-text font-display text-4xl font-bold text-transparent dark:from-white dark:to-white sm:text-5xl">
+              AI-Powered
+            </h1>
             <WordRotate
               className="bg-gradient-to-r from-custom-darkblue via-custom-teal to-custom-sage bg-clip-text font-display text-4xl font-bold text-transparent dark:from-white dark:to-white sm:text-5xl"
               words={['Customer Support', 'Business Growth']}
             />
-          </h1>
+          </div>
           <p className="text-md mb-8 text-muted-foreground sm:text-xl">
             Create intelligent chatbots that understand your business and
             delight your customers.
           </p>
           <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
             <Button
-              onClick={() => redirect('/sign-up')}
+              onClick={() => router.push('/sign-up')}
               size="lg"
               className="w-full bg-primary text-primary-foreground hover:bg-primary/90 sm:w-auto"
             >
@@ -116,6 +119,6 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
-    </motion.section>
+    </motion.div>
   );
 }
