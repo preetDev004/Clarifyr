@@ -12,6 +12,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/Sidebar/sidebar';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Clarifyr | Dashboard',
+  description:
+    "Take your Business to another level with Clarifyr's AI powered customized Chat Bot!",
+};
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (

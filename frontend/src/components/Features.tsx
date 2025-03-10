@@ -118,7 +118,7 @@ export function Features() {
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
+        transition={{ delay: 0.5, duration: 0.8, ease: 'easeOut' }}
         className="absolute -left-6 top-40 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-primary/20 blur-3xl filter sm:block"
       />
       <motion.div
@@ -136,12 +136,12 @@ export function Features() {
       >
         <div className="mb-4 flex flex-col items-center">
           <Badge content={'🌟 Features'} />
-          <h1 className="mb-2 mt-4 bg-gradient-to-br from-custom-darkblue via-custom-teal to-custom-darkblue bg-clip-text font-display text-4xl font-bold text-transparent dark:text-white sm:text-5xl">
+          <h1 className="mb-2 mt-4 bg-gradient-to-b from-custom-sage via-custom-teal to-custom-darkblue bg-clip-text text-center font-display text-3xl font-bold text-transparent dark:from-white dark:via-white dark:to-zinc-400 sm:text-5xl">
             Your Productivity Boosters
           </h1>
-          <p className="text-md mb-4 text-muted-foreground sm:text-xl">
+          <p className="mb-4 text-center text-sm text-muted-foreground sm:text-lg">
             Unlock a World of Possibilities for Your Business & Revolutionize
-            Your Customer Experience With Us.
+            Customer Experience With Us.
           </p>
         </div>
         <BentoGrid>

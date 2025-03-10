@@ -73,7 +73,7 @@ const BentoCard = ({
         <motion.h3
           initial={{ x: -20 }}
           animate={isInView ? { x: 0 } : {}}
-          className="text-xl font-semibold text-neutral-700 dark:text-neutral-300"
+          className="text-lg font-semibold text-neutral-700 dark:text-neutral-300 sm:text-xl"
         >
           {name}
         </motion.h3>
@@ -81,7 +81,7 @@ const BentoCard = ({
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.2 }}
-          className="max-w-lg text-neutral-400"
+          className="max-w-lg text-sm text-neutral-400 sm:text-base"
         >
           {description}
         </motion.p>

@@ -175,7 +175,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="bg-gradient-to-r from-custom-darkblue to-custom-teal bg-clip-text font-display text-lg font-bold text-transparent transition-opacity duration-300 dark:from-white dark:to-white sm:text-xl">
-                  PragyAI
+                  Clarifyr
                 </span>
               </div>
             </SidebarMenuButton>

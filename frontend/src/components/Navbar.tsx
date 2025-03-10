@@ -5,6 +5,7 @@ import { ThemeToggle } from './ThemeToggle';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,7 +29,11 @@ const Navbar = () => {
   }
 
   return (
-    <nav
+    <motion.nav
+      suppressHydrationWarning
+      initial={{ opacity: 0, y: -70 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.1, ease: 'easeOut' }}
       className={`fixed left-0 top-0 z-50 w-full transition-all duration-300 ${
         scrolled
           ? 'bg-white bg-opacity-75 py-3 shadow-sm backdrop-blur-lg backdrop-filter dark:bg-custom-darkblue dark:bg-opacity-75'
@@ -47,7 +52,7 @@ const Navbar = () => {
               priority
             />
             <span className="bg-gradient-to-r from-custom-darkblue to-custom-teal bg-clip-text font-display text-xl font-bold text-transparent transition-colors dark:from-white dark:to-white sm:text-2xl">
-              PragyAI
+              Clarifyr
             </span>
           </Link>
 
@@ -94,7 +99,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={`absolute left-0 top-full w-full overflow-hidden bg-white/80 shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out dark:bg-custom-darkblue/90 md:hidden ${
+        className={`absolute left-0 top-full w-full overflow-hidden bg-white shadow-lg backdrop-blur-lg transition-all duration-300 ease-in-out dark:bg-custom-darkblue md:hidden ${
           isOpen ? 'max-h-[400px] opacity-100' : 'invisible max-h-0 opacity-0'
         }`}
       >
@@ -125,7 +130,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 

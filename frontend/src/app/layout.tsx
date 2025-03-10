@@ -21,9 +21,9 @@ const lexend = Lexend({
   display: 'swap',
 });
 export const metadata: Metadata = {
-  title: 'PragyAI',
+  title: 'Clarifyr',
   description:
-    "Take your Business to another level with PragyAI's AI powered customized Chat Bot!",
+    "Take your Business to another level with Clarifyr's AI powered customized Chat Bot!",
 };
 
 export default function RootLayout({
@@ -43,7 +43,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-            storageKey="pragyai-theme"
+            storageKey="clarifyr-theme"
           >
             {children}
           </ThemeProvider>
