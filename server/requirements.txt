@@ -1,2 +1,4 @@
 Flask
 loguru
+pytest
+pytest-flask
