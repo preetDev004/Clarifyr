@@ -1,4 +1,5 @@
 from __main__ import app
+import os
 
 from flask import request
 from loguru import logger
@@ -30,7 +31,7 @@ def upload_data():
 			"data": request.data.decode("utf-8")
 		}
 
-		logger.debug(f"text/plain data uploaded: {data}")
+		logger.debug(f"text/plain data uploaded")
 	elif content_type.find("multipart/form-data") != -1:
 		# Get request data
 		if "file" in request.files:
@@ -48,16 +49,25 @@ def upload_data():
 			logger.debug(f"multipart/form-data data uploaded")
 			logger.debug(f"File name: {data['name']}, File extension: {data['type']}, File size: {len(data['data'])}")
 
-			if save == "true":
-				logger.debug("Saving original file...")
+			# Delete the file if save is not true
+			if save != "true":
+				os.remove(data["full-path"])
+				logger.debug(f"File deleted: {data['full-path']}")
+				
 	else:
 		logger.error("Invalid Content-Type")
 		return "Invalid Content-Type", 400
     
-	if not data:
+	if not data or not data["data"]:
 		logger.error("No data uploaded")
 		return "No data uploaded", 400
 	
-	logger.log(f"Extracted data: \n{data[:min(len(data), 100)]}...\n\n ...\n\n {data[-min(len(data), 100):]}")
+	if len(data["data"]) > 200:
+		logger.debug(
+			f"Uploaded data: \n {data['data'][:200]}...\n\n...\n\n {data['data'][-200:]}", 
+		)
+	else:
+		logger.debug(f"Data: {data['data']}")
+
 
 	return "Data uploaded successfully!"
