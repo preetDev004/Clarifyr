@@ -1,15 +1,19 @@
 import { Features } from '@/components/Features';
 import Hero from '@/components/Hero';
-import HowTo from '@/components/HowTo';
 import Navbar from '@/components/Navbar';
+import HowItWorks from '@/components/HowItWorks';
+import Testimonials from '@/components/Testimonials';
+import Pricing from '@/components/Pricing';
 
 export default function Home() {
   return (
-    <div>
+    <>
       <Navbar />
       <Hero />
       <Features />
-      <HowTo />
-    </div>
+      <HowItWorks />
+      <Testimonials />
+      <Pricing />
+    </>
   );
 }

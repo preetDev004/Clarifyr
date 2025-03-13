@@ -18,18 +18,18 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/Sidebar/sidebar';
+} from '@/components/ui/sidebar/sidebar';
 import Image from 'next/image';
 
-import { NavMain } from '@/components/ui/Sidebar/nav-main';
-import { NavProjects } from '@/components/ui/Sidebar/nav-projects';
-import { NavUser } from '@/components/ui/Sidebar/nav-user';
+import { NavMain } from '@/components/ui/sidebar/nav-main';
+import { NavProjects } from '@/components/ui/sidebar/nav-projects';
+import { NavUser } from '@/components/ui/sidebar/nav-user';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from '@/components/ui/Sidebar/sidebar';
+} from '@/components/ui/sidebar/sidebar';
 
 // This is sample data.
 const data = {

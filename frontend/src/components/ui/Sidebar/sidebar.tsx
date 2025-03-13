@@ -9,21 +9,21 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/input';
-import { Separator } from '@/components/ui/Sidebar/separator';
+import { Separator } from '@/components/ui/sidebar/separator';
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/Sidebar/sheet';
-import { Skeleton } from '@/components/ui/Sidebar/skeleton';
+} from '@/components/ui/sidebar/sheet';
+import { Skeleton } from '@/components/ui/sidebar/skeleton';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/Sidebar/tooltip';
+} from '@/components/ui/sidebar/tooltip';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

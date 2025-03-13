@@ -3,14 +3,14 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { TESTIMONIALS } from '../../constants';
-import Badge from './Badge';
+import Badge from './ui/landing/badge';
 import { WordRotate } from './magicui/landing/word-rotate';
 import { Button } from './ui/Button';
 
 export default function Hero() {
   const router = useRouter();
   return (
-    <div className="container mx-auto mt-16 flex items-center justify-center px-4 py-12 sm:mt-28 sm:px-6 lg:px-8 lg:py-20">
+    <section className="container mx-auto mt-16 flex items-center justify-center px-4 py-12 sm:mt-28 sm:px-6 lg:px-8 lg:py-20">
       <div className="relative z-10 mb-10 flex w-full flex-col items-center justify-center lg:mb-0 lg:w-1/2">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -70,7 +70,7 @@ export default function Hero() {
           className="mt-12 flex flex-col items-center space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0"
         >
           <div className="flex -space-x-5">
-            {TESTIMONIALS.map((item, index) => (
+            {TESTIMONIALS.slice(0, 5).map((item, index) => (
               <Image
                 key={index}
                 src={item.src}
@@ -89,6 +89,6 @@ export default function Hero() {
           </p>
         </motion.div>
       </div>
-    </div>
+    </section>
   );
 }

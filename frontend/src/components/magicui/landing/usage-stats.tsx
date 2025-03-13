@@ -7,14 +7,14 @@ const UsageFeature = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        'relative mx-auto h-full w-full max-w-[400px] cursor-pointer overflow-hidden rounded-2xl p-4',
+        'relative h-full w-full max-w-[600px] cursor-pointer overflow-hidden rounded-2xl p-4 lg:max-w-[400px]',
         // animation styles
         'transition-all duration-200 ease-in-out hover:scale-[103%]',
         className
       )}
     >
       <div className="flex flex-row items-center justify-between space-y-0 p-2 pb-2"></div>
-      <div className="p-6 pt-0 md:p-2">
+      <div className="max-w-[500px] p-6 pt-0 md:p-2">
         <div className="flex items-end gap-2">
           <div className="w-[95px] text-2xl font-bold">
             <NumberTicker value={2350} />+

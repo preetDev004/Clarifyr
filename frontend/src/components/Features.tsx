@@ -11,10 +11,10 @@ import { Marquee } from '@/components/magicui/landing/marquee';
 import { cn } from '@/lib/utils';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
-import Badge from './Badge';
 import UsageFeature from './magicui/landing/usage-stats';
 import { AnimatedBeamMultipleOutput } from './ui/landing/AnimatedBeamMultipleOutput';
 import { AnimatedPop } from './ui/landing/AnimatedPop';
+import Header from './ui/landing/header';
 
 const files = [
   {
@@ -114,18 +114,18 @@ export function Features() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-5% 0px' });
   return (
-    <div className="container relative mb-12 lg:mt-16">
+    <section className="container relative mb-4 mt-8 lg:mt-12">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.5, duration: 0.8, ease: 'easeOut' }}
-        className="absolute -left-6 top-40 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-primary/20 blur-3xl filter sm:block"
+        className="absolute -left-6 top-44 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-primary/20 blur-3xl filter sm:block"
       />
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="absolute -right-6 bottom-2 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-primary/20 blur-3xl filter sm:block"
+        className="absolute -right-6 bottom-4 hidden h-72 w-72 -translate-x-1/2 -translate-y-1/2 transform rounded-full bg-primary/20 blur-3xl filter sm:block"
       />
       <motion.div
         ref={ref}
@@ -134,16 +134,12 @@ export function Features() {
         transition={{ duration: 0.8, type: 'spring' }}
         className="flex flex-col items-center"
       >
-        <div className="mb-4 flex flex-col items-center">
-          <Badge content={'🌟 Features'} />
-          <h1 className="mb-2 mt-4 bg-gradient-to-b from-custom-sage via-custom-teal to-custom-darkblue bg-clip-text text-center font-display text-3xl font-bold text-transparent dark:from-white dark:via-white dark:to-zinc-400 sm:text-5xl">
-            Your Productivity Boosters
-          </h1>
-          <p className="mb-4 text-center text-sm text-muted-foreground sm:text-lg">
-            Unlock a World of Possibilities for Your Business & Revolutionize
-            Customer Experience With Us.
-          </p>
-        </div>
+        <Header
+          badgeContent="🌟 Features"
+          title="Your Productivity Boosters"
+          description="Unlock a World of Possibilities for Your Business & Revolutionize
+            Customer Experience With Us."
+        />
         <BentoGrid>
           {features.map((feature, idx) => (
             <BentoCard
@@ -156,6 +152,6 @@ export function Features() {
           ))}
         </BentoGrid>
       </motion.div>
-    </div>
+    </section>
   );
 }

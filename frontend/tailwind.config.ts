@@ -173,6 +173,14 @@ export default {
             transform: 'translateY(calc(-100% - var(--gap)))',
           },
         },
+        'timeline-flow': {
+          '0%': {
+            transform: 'scaleY(0)',
+          },
+          '100%': {
+            transform: 'scaleY(1)',
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -185,6 +193,7 @@ export default {
         spotlight: 'spotlight 2s ease forwards 0.5s',
         marquee: 'marquee var(--duration) infinite linear',
         'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
+        'timeline-flow': 'timeline-flow 5s linear forwards',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
