@@ -1,5 +1,22 @@
 from flask import Flask
 from loguru import logger
+from dotenv import load_dotenv
+import os
+from clerk_backend_api import Clerk
+
+load_dotenv('/server/.env')
+
+CLERK_SECRET_KEY = os.getenv("CLERK_SECRET_KEY")
+
+clerk_client = Clerk(bearer_auth=f'{CLERK_SECRET_KEY}')
+
+res = clerk_client.sessions.get(session_id="sess_2uF9SUcGcR5HLP9XACW88UOU0Py")
+
+assert res is not None
+
+print(res)
+
+logger.info("Clerk User Object:", res)
 
 app = Flask(__name__)
 
