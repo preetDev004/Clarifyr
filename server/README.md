@@ -45,6 +45,12 @@ The endpoint accepts two primary content types:
     *   `text/plain`: Indicates that the request body contains plain text data.
     *   `multipart/form-data`: Indicates that the request is uploading a file.
 
+**Query Parameters:**
+
+*   **save** (Optional):
+	*	`true`: Indicates that the original document should be persisted on the server.
+	*	Available only for multipart form-data upload
+
 **Body:**
 
 *   **text/plain:**
