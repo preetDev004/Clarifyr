@@ -12,8 +12,9 @@ def hello_world():
     logger.info("GET / route hit!")
     return "Hello World"
 
+# Route imports
+import routes.expertise_data
 import routes.signup
-
 import routes.get_user
 
 if __name__ == '__main__':
