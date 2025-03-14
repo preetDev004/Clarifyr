@@ -1,2 +1,6 @@
 Flask
 loguru
+textract
+python_dotenv
+clerk-backend-api
+pymongo
