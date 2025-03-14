@@ -8,9 +8,12 @@ users_schema = {
     "validator": {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["user_id"],
+            "required": ["user_id", "email_address"],
             "properties": {
                 "user_id": {
+                    "bsonType": "string"
+                },
+                "email_address": {
                     "bsonType": "string"
                 }
             }
