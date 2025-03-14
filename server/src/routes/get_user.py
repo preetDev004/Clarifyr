@@ -17,7 +17,7 @@ def get_user(user_id):
     # if requested user's id doesn't match with sender's id, 
     if user_id != clerk_user.id:
         response = Response(
-            json.dumps({"message": "You are unauthorized to get this user's infromation"}),
+            json.dumps({"message": "You are unauthorized to get this user's information"}),
             status=401,
             headers={"Content-Type": "application/json"}
         )
