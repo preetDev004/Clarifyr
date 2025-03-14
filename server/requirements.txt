@@ -2,3 +2,4 @@ Flask
 loguru
 python_dotenv
 clerk-backend-api
+pymongo
