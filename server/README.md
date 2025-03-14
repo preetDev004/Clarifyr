@@ -20,19 +20,19 @@ sudo docker build -t capstone-server-dev -f Dockerfile.dev .
 sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-server-dev-container capstone-server-dev
 ```
 
-## API reference
+# API reference
 
 * [`POST /signup`](#post-signup)
 * [`GET /user/<user_id>`](#get-useruser_id)
 * [`POST /upload_data`](#post-upload_data)
 
-### `POST /signup`
+## `POST /signup`
 
-#### Description
+### Description
 
 This endpoint handles user creation for MongoDB Atlas database. It takes in the `SessionID` header, pulls Clerk User's information from it, and creates a document in MongoDB based on Clerk User's information. On success, responds with a URl to get the created user's data.
 
-#### Request
+### Request
 
 **Method:** `POST`
 
@@ -43,7 +43,7 @@ This endpoint handles user creation for MongoDB Atlas database. It takes in the 
 *   **SessionID** (Required):
     * Contains authenticated Clerk User's session id
 
-#### Response
+### Response
 
 * **200 Ok**
     ```json
@@ -66,13 +66,13 @@ This endpoint handles user creation for MongoDB Atlas database. It takes in the 
     }
     ```
 
-### `GET /user/<user_id>`
+## `GET /user/<user_id>`
 
-#### Description
+### Description
 
 This endpoint returns data for a user with given ID from MongoDB Atlas. The `user_id` parameter refers to the document's `user_id` field in MongoDB. This endpoint requires authentication with `SessionID` header and rejects attemps to get data for users other than the sender.
 
-#### Request
+### Request
 
 **Method:** `GET`
 
@@ -83,7 +83,7 @@ This endpoint returns data for a user with given ID from MongoDB Atlas. The `use
 *   **SessionID** (Required):
     * Contains authenticated Clerk User's session id
 
-#### Response
+### Response
 
 * **200 Ok**
     ```json
@@ -113,9 +113,9 @@ This endpoint returns data for a user with given ID from MongoDB Atlas. The `use
     ```
 
 
-### `POST /upload_data`
+## `POST /upload_data`
 
-#### Description
+### Description
 
 This endpoint handles the upload of expertise data for chatbots, supporting both plain text and file uploads (multipart/form-data).
 
@@ -124,7 +124,7 @@ The endpoint accepts two primary content types:
 *   **text/plain:** For uploading raw text data.
 *   **multipart/form-data:** For uploading files.
 
-#### Request
+### Request
 
 **Method:** `POST`
 
@@ -153,7 +153,7 @@ The endpoint accepts two primary content types:
         *   **Allowed File Extensions:** `.pdf`, `.docx`, `.txt`
         *   **Maximum File Size:** 25 MB
 
-#### Response
+### Response
 
 **Status Codes:**
 
@@ -166,7 +166,7 @@ The endpoint accepts two primary content types:
     *   **`"File size exceeds the maximum limit of 25MB"`:** The uploaded file was larger than 25 MB.
     *   **`"No data uploaded"`:** No data was uploaded.
 
-#### Examples
+### Examples
 
 **Example 1: Uploading Plain Text**
 
