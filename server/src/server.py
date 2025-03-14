@@ -1,5 +1,9 @@
-from flask import Flask
+from flask import Flask, request, Response, json
 from loguru import logger
+from dotenv import load_dotenv
+from utils.mongodb import connect_to_db
+
+load_dotenv('/server/.env')
 
 app = Flask(__name__)
 
@@ -10,7 +14,9 @@ def hello_world():
 
 # Route imports
 import routes.expertise_data
+import routes.signup
 
 if __name__ == '__main__':
+    connect_to_db()
     logger.info("Server now running on port 3000!")
     app.run(debug=True, host="0.0.0.0", port=3000)

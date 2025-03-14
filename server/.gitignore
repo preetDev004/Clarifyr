@@ -1,4 +1,4 @@
 .env
 storage
-__pycache__
 user_documents
+**/__pycache__
