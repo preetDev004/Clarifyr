@@ -22,7 +22,98 @@ sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-ser
 
 ## API reference
 
-### POST /upload_data
+* [`POST /signup`](#post-signup)
+* [`GET /user/<user_id>`](#get-useruser_id)
+* [`POST /upload_data`](#post-upload_data)
+
+### `POST /signup`
+
+#### Description
+
+This endpoint handles user creation for MongoDB Atlas database. It takes in the `SessionID` header, pulls Clerk User's information from it, and creates a document in MongoDB based on Clerk User's information. On success, responds with a URl to get the created user's data.
+
+#### Request
+
+**Method:** `POST`
+
+**Endpoint:** `/signup`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+#### Response
+
+* **200 Ok**
+    ```json
+    {
+        "user_data_url": "http://localhost:3000/user/user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+    }
+    ```
+
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+* **400 Bad Request** (User Already Exists)
+    ```json
+    {
+        "message": "This User already exists"
+    }
+    ```
+
+### `GET /user/<user_id>`
+
+#### Description
+
+This endpoint returns data for a user with given ID from MongoDB Atlas. The `user_id` parameter refers to the document's `user_id` field in MongoDB. This endpoint requires authentication with `SessionID` header and rejects attemps to get data for users other than the sender.
+
+#### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/user/<user_id>`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+#### Response
+
+* **200 Ok**
+    ```json
+    {
+        "_id": {
+            "$oid": "67d3ba448fd546713ef9f8f2"
+        },
+        "user_id": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv",
+        "username": null,
+        "first_name": null,
+        "last_name": null,
+        "email_address": "pc.cposu@gmail.com"
+    }
+    ```
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+* **401 Unauthorized** (Trying to get other user's data)
+    ```json
+    {
+        "message": "You are unauthorized to get this user's information"
+    }
+    ```
+
+
+### `POST /upload_data`
 
 #### Description
 
