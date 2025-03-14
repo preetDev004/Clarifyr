@@ -38,6 +38,7 @@ def extract_file_data(file):
 		data["full-path"] = path
 		data["type"] = file.content_type
 		data["data"] = text_data.decode('utf-8')
+		data["size"] = os.path.getsize(path)
 
 	return data
 

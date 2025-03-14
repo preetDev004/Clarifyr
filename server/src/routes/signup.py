@@ -15,7 +15,7 @@ def signup():
     if not session_id:
         response = Response(
             json.dumps({"message": "No Authentication Details Provided"}),
-            status=400,
+            status=401,
             headers={
                 "Content-Type": "application/json"
             }
@@ -23,8 +23,8 @@ def signup():
         return response
     # if SessionID is provided, get the Clerk's user id from it
     user = get_clerk_user_from_session(session_id=session_id)
-    logger.info("User ID from request: {}", user.id)
-    logger.info("User Object: {}", user)
+    logger.debug("User ID from request: {}", user.id)
+    logger.debug("User Object: {}", user)
     
     # insert the new user in mongodb database
     collection = get_mongo_client()["main"]["users"]
@@ -38,7 +38,7 @@ def signup():
             "email_address": user.email_addresses[0].email_address,
         })
         
-        logger.info('Insert user result: {}', ins)
+        logger.debug('Insert user result: {}', ins)
         
     except Exception as e:
         logger.error("Error while inserting a user: {}", e)
