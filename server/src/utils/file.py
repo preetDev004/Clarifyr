@@ -2,29 +2,16 @@ import uuid
 import os
 import re
 
-import nltk
-import string
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from loguru import logger
 import textract
-from sentence_transformers import SentenceTransformer
+from qdrant_client.models import PointStruct
 
 from config.file_upload import allowed_file_extensions, maximum_file_size
 from utils.mongodb import get_mongo_client
-
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-model_path = "./models/llm-embedder"
-
-try:
-    model = SentenceTransformer(model_path)
-except:
-    model = SentenceTransformer('BAAI/llm-embedder')
-
-# Download required NLTK resources
-nltk.download('stopwords')
-nltk.download('punkt')
-nltk.download('punkt_tab')
+import utils.nlp
+from utils.nlp import model, qdrant_client
 
 def extract_file_data(file):
 	data = {
@@ -108,6 +95,26 @@ def nltk_chunking(words, file_name, chunk_size=128):
 		embeddings = model.encode(chunks, batch_size=12)
 
 		logger.debug(f"Embedding complete: {embeddings.shape} shape")
+
+		# Create PointStructs from embeddings
+		points = []
+		for i, embedding in enumerate(embeddings):
+			points.append(PointStruct(
+				id=str(uuid.uuid4()),
+				vector=embedding,
+				payload={
+					"file_name": file_name,
+					"data": chunks[i]
+				}
+			))
+
+		# Insert chunks into Qdrant vector database
+		qdrant_client.upsert(
+			collection_name="chunks",
+			points=points
+		)
+
+		logger.debug("Chunks inserted into Qdrant vector database")
 
 		# Update file processing status
 		collection.update_one(

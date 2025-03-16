@@ -6,3 +6,4 @@ clerk-backend-api
 pymongo
 nltk
 sentence-transformers
+qdrant-client[fastembed]
