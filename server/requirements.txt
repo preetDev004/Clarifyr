@@ -4,3 +4,5 @@ textract
 python_dotenv
 clerk-backend-api
 pymongo
+nltk
+sentence-transformers

@@ -1,10 +1,30 @@
 import uuid
 import os
+import re
 
+import nltk
+import string
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from loguru import logger
 import textract
+from sentence_transformers import SentenceTransformer
 
 from config.file_upload import allowed_file_extensions, maximum_file_size
+from utils.mongodb import get_mongo_client
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+model_path = "./models/llm-embedder"
+
+try:
+    model = SentenceTransformer(model_path)
+except:
+    model = SentenceTransformer('BAAI/llm-embedder')
+
+# Download required NLTK resources
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('punkt_tab')
 
 def extract_file_data(file):
 	data = {
@@ -33,8 +53,8 @@ def extract_file_data(file):
 	text_data = textract.process(path, output_encoding='utf-8')
 
 	if file:
-		data["name"] = file_name
-		data["local-name"] = generated_file_name
+		data["original-name"] = file_name
+		data["name"] = generated_file_name
 		data["full-path"] = path
 		data["type"] = file.content_type
 		data["data"] = text_data.decode('utf-8')
@@ -57,3 +77,50 @@ def validate_file(data):
 		return False, "File size exceeds the maximum limit of 25MB"
 
 	return True, None
+
+def preprocess_data(text):
+	stop_words = set(stopwords.words("english"))
+
+	text = text.lower()
+
+	# Replace all white spaces with a space
+	text = re.sub(r'\s+', ' ', text).strip()
+	
+	# Tokenize text
+	tokens = word_tokenize(text)
+	# Remove stopwords
+	filtered_tokens = [word for word in tokens if word not in stop_words]
+
+	return filtered_tokens
+
+def nltk_chunking(words, file_name, chunk_size=128):
+	collection = get_mongo_client()["main"]["documents"]
+
+	try:
+		# Token by token chunking with 50% overlap
+		chunks = []
+		for i in range(0, len(words), chunk_size//2):
+			chunks.append(" ".join(words[i:i+chunk_size]))
+
+		logger.debug(f"Chunking complete: {len(chunks)} chunks generated")
+
+		# Generate embeddings
+		embeddings = model.encode(chunks, batch_size=12)
+
+		logger.debug(f"Embedding complete: {embeddings.shape} shape")
+
+		# Update file processing status
+		collection.update_one(
+			{"name": file_name},
+			{"$set": {"status": "success"}}
+		)
+
+		logger.debug("File processing completed successfully")
+	except Exception as e:
+		logger.error(e)
+
+		# Update file processing status
+		collection.update_one(
+			{"name": file_name},
+			{"$set": {"status": "failed"}}
+		)

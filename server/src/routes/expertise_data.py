@@ -2,11 +2,12 @@ from __main__ import app
 import os
 import uuid
 from datetime import datetime
+import threading
 
 from flask import request, Response, json
 from loguru import logger
 
-from utils.file import extract_file_data, validate_file
+from utils.file import extract_file_data, validate_file, preprocess_data, nltk_chunking
 from utils.clerk import get_clerk_user_from_session
 from utils.mongodb import get_mongo_client
 
@@ -53,9 +54,11 @@ def upload_data():
 	if content_type.find("text/plain") != -1:
 		# Get request data
 		data = {
+			"original-name": "",
 			"name": str(uuid.uuid4()),
 			"type": "text",
-			"data": request.data.decode("utf-8")
+			"data": request.data.decode("utf-8"),
+			"size": len(request.data)
 		}
 
 		logger.debug(f"text/plain data uploaded")
@@ -106,28 +109,39 @@ def upload_data():
 			}
 		)
 	
-	if len(data["data"]) > 200:
+	data["original-data"] = data["data"]
+	data["data"] = preprocess_data(data["data"])
+	data_text = ' '.join(data["data"])
+
+	logger.debug(f"Preprocessed done: Orig: {len(data['original-data'])} bytes, Preprocessed: {len(data_text)} bytes")
+	
+	if len(data_text) > 200:
 		logger.debug(
-			f"Uploaded data: \n {data['data'][:200]}...\n\n...\n\n {data['data'][-200:]}", 
+			f"Data: \n {data_text[:200]}...\n\n...\n\n {data_text[-200:]}", 
 		)
 	else:
-		logger.debug(f"Data: {data['data']}")
+		logger.debug(f"Data: {data_text}")
 
 	# insert the new document in mongodb database
 	collection = get_mongo_client()["main"]["documents"]
 
 	ins = collection.insert_one({
-		"name": data["local-name"],
-		"original_name": data["name"],
+		"name": data["name"],
+		"original_name": data["original-name"],
 		"user_id": "",
-		"content": data["data"],
+		"content": data["original-data"],
 		"type": data["type"],
 		"size": data["size"],
+		"status": "processing",
 		"created_at": datetime.now(),
 		"updated_at": datetime.now()
 	})
 
 	logger.debug('Insert document result: {}', ins)
+
+	# Start chunking in a new thread to avoid response delays
+	thread = threading.Thread(target=nltk_chunking, args=(data["data"], data["name"], 128))
+	thread.start()
 
 	return Response(
 			json.dumps({"message": "Data uploaded successfully!"}),
