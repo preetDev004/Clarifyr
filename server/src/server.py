@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, json
+from flask import Flask
 from loguru import logger
 from dotenv import load_dotenv
 from utils.mongodb import connect_to_db
@@ -15,6 +15,7 @@ def hello_world():
 # Route imports
 import routes.expertise_data
 import routes.signup
+import routes.get_user
 
 if __name__ == '__main__':
     connect_to_db()

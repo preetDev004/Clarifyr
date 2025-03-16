@@ -2,29 +2,18 @@ from __main__ import app
 from flask import request, Response, json
 from loguru import logger
 import os
-from utils.clerk import get_clerk_user_from_session
 from utils.mongodb import get_mongo_client
+from utils.auth import get_clerk_user
 
 @app.route("/signup", methods = ["POST"])
 def signup():
     logger.info("POST /signup hit!")
     response = None
-    # Get the SessionID header
-    session_id = request.headers.get('SessionID')
-    # If no SessionID provided, respond with Bad Request
-    if not session_id:
-        response = Response(
-            json.dumps({"message": "No Authentication Details Provided"}),
-            status=401,
-            headers={
-                "Content-Type": "application/json"
-            }
-        )
-        return response
-    # if SessionID is provided, get the Clerk's user id from it
-    user = get_clerk_user_from_session(session_id=session_id)
-    logger.debug("User ID from request: {}", user.id)
-    logger.debug("User Object: {}", user)
+    auth = get_clerk_user(request.headers)
+    if not auth["successful"]:
+        return auth["response"]
+    
+    user = auth["user"]
     
     # insert the new user in mongodb database
     collection = get_mongo_client()["main"]["users"]
