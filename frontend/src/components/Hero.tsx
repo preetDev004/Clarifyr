@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { TESTIMONIALS } from '../../constants';
 import Badge from './ui/landing/badge';
 import { WordRotate } from './magicui/landing/word-rotate';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 
 export default function Hero() {
   const router = useRouter();

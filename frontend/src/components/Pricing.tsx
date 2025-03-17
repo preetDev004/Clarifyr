@@ -2,7 +2,7 @@
 import { motion, useInView } from 'framer-motion';
 import { Check } from 'lucide-react';
 import React, { useState } from 'react';
-import { Button } from './ui/Button';
+import { Button } from './ui/button';
 import Header from './ui/landing/header';
 interface PlanFeature {
   text: string;
@@ -72,7 +72,7 @@ const Pricing = () => {
 
   return (
     <section className="container relative mb-4 mt-8 w-full overflow-hidden p-4 lg:mt-12">
-      <div className="relative z-10 mx-auto mb-5 max-w-7xl" >
+      <div className="relative z-10 mx-auto mb-5 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -92,7 +92,6 @@ const Pricing = () => {
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ delay: 0.3 }}
           className="mb-10 flex items-center justify-center"
-         
         >
           <div className="rounded-full bg-muted p-1">
             <button
@@ -133,7 +132,7 @@ const Pricing = () => {
                   ? { opacity: 0, y: 50 }
                   : { opacity: 0, x: 50, y: 50 }
             }
-            animate={isInView ? { opacity: 1 , x: 0, y: 0 } : {}}
+            animate={isInView ? { opacity: 1, x: 0, y: 0 } : {}}
             transition={{ duration: 0.8, type: 'spring' }}
             className={`relative h-fit w-full rounded-xl ${plan.isPopular ? 'border-2 border-primary sm:scale-105' : 'border border-border md:mt-8'} bg-card p-6`}
           >
