@@ -21,6 +21,38 @@ users_schema = {
     }
 }
 
+document_schema = {
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["name", "user_id", "content", "type", "size", "created_at", "updated_at"],
+            "properties": {
+                "name": {
+                    "bsonType": "string"
+                },
+                "user_id": {
+                    "bsonType": "string"
+                },
+                "content": {
+                    "bsonType": "string"
+                },
+                "type": {
+                    "bsonType": "string"
+                },
+                "size": {
+                    "bsonType": "int"
+                },
+                "created_at": {
+                    "bsonType": "date"
+                },
+                "updated_at": {
+                    "bsonType": "date"
+                },
+            }
+        }
+    }
+}
+
 def connect_to_db():
     global mongo_client
     try:
@@ -31,6 +63,10 @@ def connect_to_db():
             logger.info("creating the users collection...")
             mongo_client["main"].create_collection("users", **users_schema)
             mongo_client["main"]["users"].create_index([("user_id", 1)], unique=True)
+        if "documents" not in mongo_client["main"].list_collection_names():
+            logger.info("creating the documents collection...")
+            mongo_client["main"].create_collection("documents", **document_schema)
+            mongo_client["main"]["documents"].create_index([("name", 1)], unique=True)
     except Exception as e:
         raise Exception("Error while connecting to the db: ", e)
 

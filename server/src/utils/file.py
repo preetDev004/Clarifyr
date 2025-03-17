@@ -1,10 +1,17 @@
 import uuid
 import os
+import re
 
+from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from loguru import logger
 import textract
+from qdrant_client.models import PointStruct
 
 from config.file_upload import allowed_file_extensions, maximum_file_size
+from utils.mongodb import get_mongo_client
+import utils.nlp
+from utils.nlp import model, qdrant_client
 
 def extract_file_data(file):
 	data = {
@@ -33,11 +40,12 @@ def extract_file_data(file):
 	text_data = textract.process(path, output_encoding='utf-8')
 
 	if file:
-		data["name"] = file_name
-		data["local-name"] = generated_file_name
+		data["original-name"] = file_name
+		data["name"] = generated_file_name
 		data["full-path"] = path
 		data["type"] = file.content_type
 		data["data"] = text_data.decode('utf-8')
+		data["size"] = os.path.getsize(path)
 
 	return data
 
@@ -56,3 +64,70 @@ def validate_file(data):
 		return False, "File size exceeds the maximum limit of 25MB"
 
 	return True, None
+
+def preprocess_data(text):
+	stop_words = set(stopwords.words("english"))
+
+	text = text.lower()
+
+	# Replace all white spaces with a space
+	text = re.sub(r'\s+', ' ', text).strip()
+	
+	# Tokenize text
+	tokens = word_tokenize(text)
+	# Remove stopwords
+	filtered_tokens = [word for word in tokens if word not in stop_words]
+
+	return filtered_tokens
+
+def nltk_chunking(words, file_name, chunk_size=128):
+	collection = get_mongo_client()["main"]["documents"]
+
+	try:
+		# Token by token chunking with 50% overlap
+		chunks = []
+		for i in range(0, len(words), chunk_size//2):
+			chunks.append(" ".join(words[i:i+chunk_size]))
+
+		logger.debug(f"Chunking complete: {len(chunks)} chunks generated")
+
+		# Generate embeddings
+		embeddings = model.encode(chunks, batch_size=12)
+
+		logger.debug(f"Embedding complete: {embeddings.shape} shape")
+
+		# Create PointStructs from embeddings
+		points = []
+		for i, embedding in enumerate(embeddings):
+			points.append(PointStruct(
+				id=str(uuid.uuid4()),
+				vector=embedding,
+				payload={
+					"file_name": file_name,
+					"data": chunks[i]
+				}
+			))
+
+		# Insert chunks into Qdrant vector database
+		qdrant_client.upsert(
+			collection_name="chunks",
+			points=points
+		)
+
+		logger.debug("Chunks inserted into Qdrant vector database")
+
+		# Update file processing status
+		collection.update_one(
+			{"name": file_name},
+			{"$set": {"status": "success"}}
+		)
+
+		logger.debug("File processing completed successfully")
+	except Exception as e:
+		logger.error(e)
+
+		# Update file processing status
+		collection.update_one(
+			{"name": file_name},
+			{"$set": {"status": "failed"}}
+		)

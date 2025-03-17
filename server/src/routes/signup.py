@@ -27,7 +27,7 @@ def signup():
             "email_address": user.email_addresses[0].email_address,
         })
         
-        logger.info('Insert user result: {}', ins)
+        logger.debug('Insert user result: {}', ins)
         
     except Exception as e:
         logger.error("Error while inserting a user: {}", e)
