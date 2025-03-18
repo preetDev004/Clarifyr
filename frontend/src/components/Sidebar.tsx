@@ -7,17 +7,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 import Image from 'next/image';
 
-import { NavMain } from '@/components/ui/sidebar/nav-main';
-import { NavUser } from '@/components/ui/sidebar/nav-user';
+import { NavMain } from '@/components/ui/Sidebar/nav-main';
+import { NavUser } from '@/components/ui/Sidebar/nav-user';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 
 // This is sample data.
 const data = {

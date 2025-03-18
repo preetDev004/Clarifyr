@@ -4,14 +4,14 @@ import {
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-} from '@/components/ui/sidebar/breadcrumb';
-import { HeaderActions } from '@/components/ui/sidebar/header-actions';
-import { Separator } from '@/components/ui/sidebar/separator';
+} from '@/components/ui/Sidebar/breadcrumb';
+import { HeaderActions } from '@/components/ui/Sidebar/header-actions';
+import { Separator } from '@/components/ui/Sidebar/separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

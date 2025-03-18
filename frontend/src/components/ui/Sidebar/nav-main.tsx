@@ -2,14 +2,14 @@
 
 import { ChevronRight, type LucideIcon } from 'lucide-react';
 
-import { Collapsible } from '@/components/ui/sidebar/collapsible';
+import { Collapsible } from '@/components/ui/Sidebar/collapsible';
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 import Link from 'next/link';
 
 export function NavMain({

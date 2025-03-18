@@ -14,7 +14,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/sidebar/dropdown-menu';
+} from '@/components/ui/Sidebar/dropdown-menu';
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -23,7 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 
 export function NavProjects({
   projects,
