@@ -1,1 +1,4 @@
 .env
+storage
+user_documents
+**/__pycache__
