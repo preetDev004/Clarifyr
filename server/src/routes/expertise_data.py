@@ -17,7 +17,6 @@ def upload_data():
 	data = None
 
 	# Get user session
-	# TODO: Uncomment after finishing the document processing
 	session_id = request.headers.get('SessionID')
 	# If no SessionID provided, respond with Bad Request
 	if not session_id:

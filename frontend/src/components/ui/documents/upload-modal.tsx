@@ -1,47 +1,37 @@
 'use client';
-import React, { useRef, useState } from 'react';
-import { Upload as UploadIcon, FileText, FileIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogClose,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { chatApi } from '@/lib/api'; // adjust the import to your actual API location
+import { useSession } from '@clerk/nextjs';
+import { useMutation } from '@tanstack/react-query';
+import { Upload as UploadIcon } from 'lucide-react';
+import Image from 'next/image';
+import React, { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { VALID_FILE_TYPES } from '../../../../constants';
 
 interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (file: File) => Promise<void> | void;
 }
 
-export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
+export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string>('');
-  const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
-  };
+  const { session } = useSession();
 
   const validateFile = (file: File): boolean => {
-    const validTypes = [
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain',
-    ];
-    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    const maxSize = 25 * 1024 * 1024; // 25MB
 
-    if (!validTypes.includes(file.type)) {
+    if (!VALID_FILE_TYPES.includes(file.type)) {
       setError(
         'Invalid file type. Please upload PDF, DOCX, or TXT files only.'
       );
@@ -63,11 +53,20 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
     }
   };
 
+  const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
     const file = e.dataTransfer.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -81,26 +80,38 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
     }
   };
 
-  const handleConfirmUpload = async () => {
-    if (selectedFile && !isUploading) {
-      try {
-        setIsUploading(true);
-        await onUpload(selectedFile);
-        onClose();
-        setSelectedFile(null);
-      } catch (err: unknown) {
-        console.error(err);
-        setError('Failed to upload file. Please try again.');
-      } finally {
-        setIsUploading(false);
-      }
+  // React Query mutation for uploading a file
+  const mutation = useMutation({
+    mutationKey: ['uploadDocument'],
+    mutationFn: ({ file, sessionId }: { file: File; sessionId: string }) =>
+      chatApi.uploadDocument(file, sessionId),
+    onSuccess: () => {
+      // Optionally, update/invalidate queries related to uploaded documents here:
+      // queryClient.invalidateQueries(['documents']);
+      toast.success('Uploaded!', {
+        description: 'File uploaded successfully',
+      });
+      setSelectedFile(null);
+      onClose();
+    },
+    onError: () => {
+      // console.error('Upload error:', error);
+      toast.error('Error', {
+        description: 'Failed to upload file. Please try again.',
+      });
+      setError('Failed to upload file. Please try again.');
+    },
+  });
+
+  const handleConfirmUpload = () => {
+    if (selectedFile && !mutation.isPending && session) {
+      mutation.mutate({ file: selectedFile, sessionId: session.id });
     }
   };
 
   const resetSelection = () => {
     setSelectedFile(null);
     setError('');
-    setIsUploading(false);
   };
 
   return (
@@ -140,16 +151,12 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
 
             <p className="mb-2 text-muted-foreground">
               Drag and drop your file here, or{' '}
-              <Button
-                variant="link"
-                className="h-auto p-0"
-                onClick={() => inputRef.current?.click()}
-              >
+              <Button variant="link" className="h-auto p-0">
                 browse
               </Button>
             </p>
             <p className="text-sm text-muted-foreground">
-              Supported formats: PDF, DOCX, TXT (Max 5MB)
+              Supported formats: PDF, DOCX, TXT (Max 25MB)
             </p>
             {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
           </div>
@@ -158,11 +165,29 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
             <div className="rounded-lg bg-muted p-4">
               <div className="flex items-center">
                 {selectedFile.type === 'application/pdf' ? (
-                  <FileText className="mr-3 h-8 w-8 text-destructive" />
+                  <Image
+                    src="/pdf.svg"
+                    alt="PDF Icon"
+                    width={32}
+                    height={32}
+                    className="mr-3 h-12 w-12"
+                  />
                 ) : selectedFile.type === 'text/plain' ? (
-                  <FileText className="mr-3 h-8 w-8 text-primary" />
+                  <Image
+                    src="/txt.svg"
+                    alt="TXT Icon"
+                    width={32}
+                    height={32}
+                    className="mr-3 h-12 w-12"
+                  />
                 ) : (
-                  <FileIcon className="mr-3 h-8 w-8 text-primary" />
+                  <Image
+                    src="/doc.svg"
+                    alt="DOCX Icon"
+                    width={32}
+                    height={32}
+                    className="mr-3 h-12 w-12"
+                  />
                 )}
                 <div>
                   <h3 className="font-medium">
@@ -181,15 +206,15 @@ export function UploadModal({ isOpen, onClose, onUpload }: UploadModalProps) {
               <Button
                 onClick={handleConfirmUpload}
                 className="flex-1"
-                disabled={isUploading}
+                disabled={mutation.isPending}
               >
                 <UploadIcon className="h-5 w-5" />
-                {isUploading ? 'Uploading...' : 'Confirm Upload'}
+                {mutation.isPending ? 'Uploading...' : 'Confirm Upload'}
               </Button>
               <Button
                 onClick={resetSelection}
                 className="btn-secondary flex-1"
-                disabled={isUploading}
+                disabled={mutation.isPending}
               >
                 Cancel
               </Button>

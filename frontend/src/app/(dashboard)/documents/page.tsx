@@ -6,17 +6,7 @@ import { useState } from 'react';
 
 const Page = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // const [documents, setDocuments] = useState < Array<unknown>([]);
 
-  // const handleUpload = (file: File) => {
-  //   const newDoc = {
-  //     name: file.name,
-  //     size: `${(file.size / (1024 * 1024)).toFixed(1)} MB`,
-  //     type: file.type.split('/')[1].toUpperCase(),
-  //     uploadedAt: new Date().toLocaleDateString(),
-  //   };
-  //   setDocuments([...documents, newDoc]);
-  // };
   return (
     <div className="mt-6 flex flex-col justify-center gap-6 sm:gap-8">
       {/* upload documents */}
@@ -34,13 +24,11 @@ const Page = () => {
         <UploadModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          // onUpload={handleUpload}
-          onUpload={() => console.log('upload')}
         />
       </div>
 
       {/* display documents */}
-      <div className=""> Display</div>
+      <div className=""> Display User Docs</div>
     </div>
   );
 };

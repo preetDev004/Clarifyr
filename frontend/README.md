@@ -13,11 +13,13 @@ A Next.js application with Clerk authentication and webhook integration.
 
 1. Clone the repository
 2. Copy `.env.example` to `.env`:
+
 ```bash
 cp .env.example .env
 ```
 
 3. Configure your environment variables:
+
 ```env
 NEXT_PUBLIC_API_URL=your_api_url
 CLERK_WEBHOOK_SECRET=your_webhook_secret
@@ -44,16 +46,19 @@ The application will be available at `http://localhost:3000`
 ## Clerk Webhook Setup with ngrok
 
 1. Install ngrok:
+
 ```bash
 brew install ngrok
 ```
 
 2. Configure ngrok with your auth token:
+
 ```bash
 ngrok config add-authtoken 2uTEB5drSklF7UaX4BqSp93oLOC_5LvoqH49k5S4oqC8SVQUz
 ```
 
 3. Start ngrok tunnel:
+
 ```bash
 ngrok http 3000
 ```
@@ -68,11 +73,13 @@ ngrok http 3000
 ## Webhook Testing
 
 The webhook endpoint is configured to handle Clerk events at:
+
 ```
 /api/webhooks/clerk
 ```
 
 Supported events:
+
 - `session.created` - Creates new user record in database
 
 ## Project Structure
