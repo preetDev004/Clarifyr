@@ -13,7 +13,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@/components/ui/sidebar/avatar';
+} from '@/components/ui/Sidebar/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,13 +22,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/sidebar/dropdown-menu';
+} from '@/components/ui/Sidebar/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 import { useClerk, useUser } from '@clerk/nextjs';
 import { Skeleton } from './skeleton';
 

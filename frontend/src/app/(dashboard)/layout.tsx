@@ -4,15 +4,17 @@ import {
   BreadcrumbItem,
   BreadcrumbList,
   BreadcrumbPage,
-} from '@/components/ui/sidebar/breadcrumb';
-import { HeaderActions } from '@/components/ui/sidebar/header-actions';
-import { Separator } from '@/components/ui/sidebar/separator';
+} from '@/components/ui/Sidebar/breadcrumb';
+import { HeaderActions } from '@/components/ui/Sidebar/header-actions';
+import { Separator } from '@/components/ui/Sidebar/separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from '@/components/ui/sidebar/sidebar';
+} from '@/components/ui/Sidebar/app-sidebar';
 import { Metadata } from 'next';
+import QueryProvider from '@/providers/query-provider';
+import { Toaster } from '@/components/ui/documents/sonner';
 
 export const metadata: Metadata = {
   title: 'Clarifyr | Dashboard',
@@ -41,10 +43,11 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <HeaderActions />
           </header>
           <div className="flex w-full flex-1 flex-col gap-4 bg-muted p-4 pt-0 dark:bg-custom-darkblue">
-            {children}
+            <QueryProvider>{children}</QueryProvider>
           </div>
         </SidebarInset>
       </div>
+      <Toaster />
     </SidebarProvider>
   );
 };

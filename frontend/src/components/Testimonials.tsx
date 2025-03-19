@@ -106,7 +106,7 @@ export default function Testimonials() {
               />
             ))}
           </Marquee>
-          <Marquee pauseOnHover vertical className="[--duration:20s]">
+          <Marquee pauseOnHover vertical className="[--duration:24s]">
             {firstColumn.map((review, index) => (
               <ReviewCard
                 key={index}
@@ -122,7 +122,7 @@ export default function Testimonials() {
             pauseOnHover
             vertical
             reverse
-            className="hidden [--duration:26s] lg:flex"
+            className="hidden [--duration:28s] lg:flex"
           >
             {thirdColumn.map((review, index) => (
               <ReviewCard

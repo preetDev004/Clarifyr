@@ -114,7 +114,7 @@ export function Features() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-5% 0px' });
   return (
-    <section className="container relative mb-4 mt-8 lg:mt-12">
+    <section className="container relative mb-4 mt-4 lg:mt-12">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
