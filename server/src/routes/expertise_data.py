@@ -11,27 +11,28 @@ from utils.file import extract_file_data, validate_file, preprocess_data, nltk_c
 from utils.clerk import get_clerk_user_from_session
 from utils.mongodb import get_mongo_client
 
-@app.route("/upload_data", methods=["POST"])
+@app.route("/upload_data", methods=['POST'])
 def upload_data():
 	logger.info("POST /upload_data route hit!")
 	data = None
 
 	# Get user session
 	# TODO: Uncomment after finishing the document processing
-	"""session_id = request.headers.get('SessionID')
+	session_id = request.headers.get('SessionID')
 	# If no SessionID provided, respond with Bad Request
 	if not session_id:
 		return Response(
 			json.dumps({"message": "No Authentication Details Provided"}),
 			status=401,
 			headers={
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "http://localhost:3000"
 			}
 		)
 	# if SessionID is provided, get the Clerk's user id from it
 	user = get_clerk_user_from_session(session_id=session_id)
 	logger.debug("User ID from request: {}", user.id)
-	logger.debug("User Object: {}", user)"""
+	logger.debug("User Object: {}", user)
 
 	# Get request Content-Type
 	content_type = request.headers.get("Content-Type")
@@ -47,7 +48,8 @@ def upload_data():
 			json.dumps({"message": "No Content-Type provided"}),
 			status=400,
 			headers={
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "http://localhost:3000"
 			}
 		)
 
@@ -128,7 +130,7 @@ def upload_data():
 	ins = collection.insert_one({
 		"name": data["name"],
 		"original_name": data["original-name"],
-		"user_id": "",
+		"user_id": user.id,
 		"content": data["original-data"],
 		"type": data["type"],
 		"size": data["size"],
