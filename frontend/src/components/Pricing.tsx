@@ -171,7 +171,7 @@ const Pricing = () => {
                     }`}
                   >
                     {feature.included ? (
-                      <Check className="h-3 w-3" />
+                      <Check className="h-3 w-3 dark:text-custom-hoverdark" />
                     ) : (
                       <span className="text-xs">×</span>
                     )}

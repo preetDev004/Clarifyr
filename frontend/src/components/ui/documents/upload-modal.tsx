@@ -39,7 +39,7 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
     }
 
     if (file.size > maxSize) {
-      setError('File size exceeds 5MB limit.');
+      setError('File size exceeds 25MB limit.');
       return false;
     }
 
