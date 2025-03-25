@@ -1,7 +1,7 @@
 Flask
 loguru
 pytest
-pytest-flask
+pytest-order
 textract
 python_dotenv
 clerk-backend-api

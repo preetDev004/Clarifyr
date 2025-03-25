@@ -1,13 +1,11 @@
 import pytest
-from src.server import app
+import requests
 
-@pytest.fixture
-def client():
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
+BASE_URL = "http://localhost:3000"
 
-def test_get_root(client):
+@pytest.mark.order(1)
+def test_get_root():
     """Test that GET / returns 'Hello World'"""
-    response = client.get('/')
-    assert response.data.decode('utf-8') == "Hello World"
+    response = requests.get(BASE_URL)
+    assert response.status_code == 200
+    assert response.text == "Hello World"
