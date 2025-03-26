@@ -1,6 +1,8 @@
 Flask
 flask-cors
 loguru
+pytest
+pytest-order
 textract
 python_dotenv
 clerk-backend-api
