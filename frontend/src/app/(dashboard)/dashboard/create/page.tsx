@@ -1,6 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import BotCardHeader from '@/components/ui/chatbot/bot-card-header';
+import PersonaTrait from '@/components/ui/chatbot/persona-trait';
 import { DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,16 +13,27 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@radix-ui/react-dialog';
-import { ArrowLeft, Check, Plus, Search, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  BrainCircuit,
+  Check,
+  Laugh,
+  Plus,
+  Search,
+  ShieldCheck,
+  UsersRound,
+  X,
+} from 'lucide-react';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { docs } from '../../documents/page';
+import { docs, PERSONA_TRAITS } from '../../../../../constants';
 
-type Inputs = {
+type CreateBotFormInputs = {
   botName: string;
   botDescription: string;
   openingMessage: string;
   selectedDocs: string[];
+  botPersona: string[];
 };
 
 const CreateBotPage = () => {
@@ -30,21 +42,23 @@ const CreateBotPage = () => {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<CreateBotFormInputs>({
     defaultValues: {
       selectedDocs: [],
+      botPersona: [],
     },
   });
   const [searchTerm, setSearchTerm] = useState('');
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
 
-  const formSubmitHandler: SubmitHandler<Inputs> = (data) => {
+  const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = (data) => {
     try {
       const trimmedData = {
         botName: data.botName.trim(),
         botDescription: data.botDescription.trim(),
         openingMessage: data.openingMessage.trim(),
         selectedDocs: data.selectedDocs,
+        botPersona: data.botPersona,
       };
 
       console.log(trimmedData);
@@ -78,17 +92,18 @@ const CreateBotPage = () => {
 
       <form
         onSubmit={handleSubmit(formSubmitHandler)}
-        className="flex flex-col gap-4 sm:container md:gap-8"
+        className="flex flex-col gap-4 md:container md:gap-8"
       >
         {/* Name & Opening */}
-        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
           <BotCardHeader
+            icon={Laugh}
             title={'First Impression'}
             description={
               "Shape your users' first interaction with a captivating bot name and a warm welcome message."
             }
           />
-          <div className="flex w-full flex-col gap-4 sm:max-w-md lg:max-w-lg xl:max-w-xl">
+          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
             <div className="grid w-full gap-1.5">
               <label htmlFor="bot-name" className="text-sm sm:text-base">
                 Bot Name
@@ -206,14 +221,15 @@ const CreateBotPage = () => {
         </div>
 
         {/* Knowledge Base */}
-        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:flex-row sm:items-start sm:justify-between sm:p-6">
+        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
           <BotCardHeader
+            icon={BrainCircuit}
             title={'Knowledge Base'}
             description={
               'Choose Documents you want to add to your knowledge base of your AI Assistant.'
             }
           />
-          <div className="flex w-full flex-col gap-4 sm:max-w-md lg:max-w-lg xl:max-w-xl">
+          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
             <Controller
               name="selectedDocs"
               control={control}
@@ -260,36 +276,44 @@ const CreateBotPage = () => {
                               />
                             </div>
                             <div className="scrollbar-hide max-h-[300px] space-y-2 overflow-y-auto scroll-smooth">
-                              {filteredDocuments.map((doc) => (
-                                <div
-                                  key={doc.id}
-                                  className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 transition-colors hover:bg-gray-50 hover:dark:bg-custom-hoverdark/20 ${
-                                    value.includes(doc.id)
-                                      ? 'border-primary bg-primary/5 dark:border-teal-400 dark:bg-primary/10'
-                                      : 'border-teal-900'
-                                  }`}
-                                  onClick={() => {
-                                    const newValue = value.includes(doc.id)
-                                      ? value.filter((id) => id !== doc.id)
-                                      : value.length < 4
-                                        ? [...value, doc.id]
-                                        : value;
-                                    onChange(newValue);
-                                  }}
-                                >
-                                  <div>
-                                    <p className="font-medium">{doc.name}</p>
-                                    <p className="text-sm text-muted-foreground/80">
-                                      {doc.type} • {doc.size} MB
-                                    </p>
+                              {filteredDocuments.length > 0 ? (
+                                filteredDocuments.map((doc) => (
+                                  <div
+                                    key={doc.id}
+                                    className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 transition-colors hover:bg-gray-50 hover:dark:bg-custom-hoverdark/20 ${
+                                      value.includes(doc.id)
+                                        ? 'border-primary bg-primary/5 dark:border-teal-400 dark:bg-primary/10'
+                                        : 'border-teal-900'
+                                    }`}
+                                    onClick={() => {
+                                      const newValue = value.includes(doc.id)
+                                        ? value.filter((id) => id !== doc.id)
+                                        : value.length < 4
+                                          ? [...value, doc.id]
+                                          : value;
+                                      onChange(newValue);
+                                    }}
+                                  >
+                                    <div>
+                                      <p className="font-medium">{doc.name}</p>
+                                      <p className="text-sm text-muted-foreground/80">
+                                        {doc.type} • {doc.size} MB
+                                      </p>
+                                    </div>
+                                    {value.includes(doc.id) ? (
+                                      <Check className="h-5 w-5 text-primary dark:text-custom-hoverdark" />
+                                    ) : (
+                                      <Plus className="h-5 w-5 text-muted-foreground/80" />
+                                    )}
                                   </div>
-                                  {value.includes(doc.id) ? (
-                                    <Check className="h-5 w-5 text-primary dark:text-custom-hoverdark" />
-                                  ) : (
-                                    <Plus className="h-5 w-5 text-muted-foreground/80" />
-                                  )}
+                                ))
+                              ) : (
+                                <div className="flex items-center justify-center p-4">
+                                  <p className="text-muted-foreground">
+                                    No documents found.
+                                  </p>
                                 </div>
-                              ))}
+                              )}
                             </div>
                           </div>
                           <div className="mt-4 flex justify-end">
@@ -353,6 +377,54 @@ const CreateBotPage = () => {
               )}
             />
           </div>
+        </div>
+
+        {/* Bot Persona */}
+        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
+          <BotCardHeader
+            icon={UsersRound}
+            title={'Personality Traits'}
+            description={
+              'Define the tone and style of your Bot that will shape its communication, making it unique & engaging.'
+            }
+          />
+          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
+            <Controller
+              name="botPersona"
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <>
+                  {PERSONA_TRAITS &&
+                    PERSONA_TRAITS.map((trait, index) => (
+                      <PersonaTrait
+                        key={index}
+                        title={trait.title}
+                        description={trait.description}
+                        isSelected={value.includes(trait.title)}
+                        onToggle={(isSelected) => {
+                          const newValue = isSelected
+                            ? [...value, trait.title]
+                            : value.filter((t) => t !== trait.title);
+                          onChange(newValue);
+                        }}
+                      />
+                    ))}
+                </>
+              )}
+            />
+          </div>
+        </div>
+
+        {/* Allowed Domains */}
+        <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
+          <BotCardHeader
+            icon={ShieldCheck}
+            title={'Access Control'}
+            description={
+              'Manage who can interact with your AI Assistant. Define domains where it can be accessed.'
+            }
+          />
+          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl"></div>
         </div>
 
         <Button className="flex w-fit items-end justify-end" type="submit">

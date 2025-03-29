@@ -2,13 +2,13 @@
 'use client';
 
 import { Checkbox } from '@/components/ui/checkbox';
-import { Document } from '@/lib/types';
+import { UserDocument } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
 import { MoreVertical } from 'lucide-react';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export const columns: ColumnDef<Document>[] = [
+export const columns: ColumnDef<UserDocument>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -40,7 +40,7 @@ export const columns: ColumnDef<Document>[] = [
     accessorKey: 'name',
     header: () => (
       <p className="my-2.5 font-semibold text-teal-700 dark:text-teal-300">
-        Document
+        UserDocument
       </p>
     ),
     cell: ({ row }) => {

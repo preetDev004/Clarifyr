@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/documents/table';
-import { Document } from '@/lib/types';
+import { UserDocument } from '@/lib/types';
 import { DataTablePagination } from '@/components/ui/documents/DataTablePagination';
 
 interface DataTableProps<TData, TValue> {
@@ -25,7 +25,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData extends Document, TValue>({
+export function DataTable<TData extends UserDocument, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
