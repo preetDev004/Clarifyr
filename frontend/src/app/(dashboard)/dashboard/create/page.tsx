@@ -1,6 +1,7 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import BotCardHeader from '@/components/ui/chatbot/bot-card-header';
+import DomainSecurity from '@/components/ui/chatbot/domain-security';
 import PersonaTrait from '@/components/ui/chatbot/persona-trait';
 import { DialogHeader } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -34,6 +35,7 @@ type CreateBotFormInputs = {
   openingMessage: string;
   selectedDocs: string[];
   botPersona: string[];
+  allowedDomains: string[];
 };
 
 const CreateBotPage = () => {
@@ -46,6 +48,7 @@ const CreateBotPage = () => {
     defaultValues: {
       selectedDocs: [],
       botPersona: [],
+      allowedDomains: ["",""],
     },
   });
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,6 +62,9 @@ const CreateBotPage = () => {
         openingMessage: data.openingMessage.trim(),
         selectedDocs: data.selectedDocs,
         botPersona: data.botPersona,
+        allowedDomains: data.allowedDomains.filter(
+          (domain) => domain.trim() !== ''
+        ),
       };
 
       console.log(trimmedData);
@@ -79,7 +85,7 @@ const CreateBotPage = () => {
   );
 
   return (
-    <div className="mt-6 flex flex-col justify-center gap-6">
+    <div className="mt-6 mb-6 sm:mb-12 flex flex-col justify-center gap-6">
       <div className="flex items-center gap-2">
         <ArrowLeft
           className="h-9 w-9 cursor-pointer rounded-full p-2 hover:bg-custom-sage/20"
@@ -424,7 +430,53 @@ const CreateBotPage = () => {
               'Manage who can interact with your AI Assistant. Define domains where it can be accessed.'
             }
           />
-          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl"></div>
+          <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
+            <Controller
+              name="allowedDomains"
+              control={control}
+              rules={{
+                validate: {
+                  validDomains: (value) => {
+                    if (!value || !Array.isArray(value)) return 'Domain list is required';
+                    
+                    // Filter out empty domains first
+                    const nonEmptyDomains = value.filter(domain => domain.trim() !== '');
+                    
+                    if (nonEmptyDomains.length === 0)
+                      return 'At least one valid domain is required';
+                    
+                    if (value.length > 5) 
+                      return 'Maximum 5 domains allowed';
+              
+                    // Domain validation regex pattern
+                    const domainPattern =
+                      /^(?!-)[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
+              
+                    // Check each non-empty domain
+                    for (const domain of nonEmptyDomains) {
+                      if (!domainPattern.test(domain)) {
+                        return `"${domain}" is not a valid domain format`;
+                      }
+                    }
+                    return true;
+                  }
+                }
+              }}
+              render={({ field: { value, onChange } }) => (
+                <>
+                  <DomainSecurity
+                    allowedDomains={value}
+                    setAllowedDomains={onChange}
+                  />
+                  {errors.allowedDomains && (
+                    <p className="text-xs text-red-500">
+                      {errors.allowedDomains.message}
+                    </p>
+                  )}
+                </>
+              )}
+            />
+          </div>
         </div>
 
         <Button className="flex w-fit items-end justify-end" type="submit">
