@@ -7,3 +7,15 @@ export type UserDocument = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type chatBot = {
+  id: string;
+  botName: string;
+  botDescription: string;
+  openingMessage: string;
+  selectedDocs: string[];
+  botPersona: string[];
+  allowedDomains: string[];
+  createdAt: string;
+  updatedAt: string;
+};

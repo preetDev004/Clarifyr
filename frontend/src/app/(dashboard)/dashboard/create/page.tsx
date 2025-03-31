@@ -48,7 +48,7 @@ const CreateBotPage = () => {
     defaultValues: {
       selectedDocs: [],
       botPersona: [],
-      allowedDomains: ["",""],
+      allowedDomains: ['', ''],
     },
   });
   const [searchTerm, setSearchTerm] = useState('');
@@ -85,7 +85,7 @@ const CreateBotPage = () => {
   );
 
   return (
-    <div className="mt-6 mb-6 sm:mb-12 flex flex-col justify-center gap-6">
+    <div className="mb-6 mt-6 flex flex-col justify-center gap-6 sm:mb-12">
       <div className="flex items-center gap-2">
         <ArrowLeft
           className="h-9 w-9 cursor-pointer rounded-full p-2 hover:bg-custom-sage/20"
@@ -398,6 +398,12 @@ const CreateBotPage = () => {
             <Controller
               name="botPersona"
               control={control}
+              rules={{
+                validate: {
+                  required: (value) =>
+                    value.length > 0 || 'Please select at least one persona',
+                },
+              }}
               render={({ field: { value, onChange } }) => (
                 <>
                   {PERSONA_TRAITS &&
@@ -415,6 +421,11 @@ const CreateBotPage = () => {
                         }}
                       />
                     ))}
+                  {errors.botPersona && (
+                    <p className="bottom-0 text-xs text-red-500">
+                      {errors.botPersona.message}
+                    </p>
+                  )}
                 </>
               )}
             />
@@ -437,21 +448,23 @@ const CreateBotPage = () => {
               rules={{
                 validate: {
                   validDomains: (value) => {
-                    if (!value || !Array.isArray(value)) return 'Domain list is required';
-                    
+                    if (!value || !Array.isArray(value))
+                      return 'Domain list is required';
+
                     // Filter out empty domains first
-                    const nonEmptyDomains = value.filter(domain => domain.trim() !== '');
-                    
+                    const nonEmptyDomains = value.filter(
+                      (domain) => domain.trim() !== ''
+                    );
+
                     if (nonEmptyDomains.length === 0)
                       return 'At least one valid domain is required';
-                    
-                    if (value.length > 5) 
-                      return 'Maximum 5 domains allowed';
-              
+
+                    if (value.length > 5) return 'Maximum 5 domains allowed';
+
                     // Domain validation regex pattern
                     const domainPattern =
                       /^(?!-)[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
-              
+
                     // Check each non-empty domain
                     for (const domain of nonEmptyDomains) {
                       if (!domainPattern.test(domain)) {
@@ -459,8 +472,8 @@ const CreateBotPage = () => {
                       }
                     }
                     return true;
-                  }
-                }
+                  },
+                },
               }}
               render={({ field: { value, onChange } }) => (
                 <>
