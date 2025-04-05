@@ -25,6 +25,8 @@ sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-ser
 * [`POST /signup`](#post-signup)
 * [`GET /user/<user_id>`](#get-useruser_id)
 * [`POST /upload_data`](#post-upload_data)
+* [`GET /get_data`](#get-get_data)
+* [`GET /get_data/<uuid>`](#get-get_data-uuid)
 
 ## `POST /signup`
 
