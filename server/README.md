@@ -25,6 +25,8 @@ sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-ser
 * [`POST /signup`](#post-signup)
 * [`GET /user/<user_id>`](#get-useruser_id)
 * [`POST /upload_data`](#post-upload_data)
+* [`GET /get_data`](#get-get_data)
+* [`GET /get_data/<uuid>`](#get-get_data-uuid)
 
 ## `POST /signup`
 
@@ -206,4 +208,163 @@ Content-Disposition: form-data; name="file"; filename="document.pdf" Content-Typ
 HTTP/1.1 200 OK Content-Length: 25 Content-Type: text/html; charset=utf-8
 
 Data uploaded successfully!
+```
+
+## `GET /get_data`
+
+### Description
+
+This endpoint retrieves uploaded expertise data associated with the authenticated user. The user must include a valid session token in the request headers. The endpoint supports fuzzy search over file names and content using a query string parameter.
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/get_data`
+
+**Headers:**
+
+- **SessionID** (Required): A valid session token used to authenticate the user and fetch their associated data.
+
+**Query Parameters:**
+
+- **q** (Optional): A search term to filter results by file name (`original_name`) or file content (`content`). Supports partial matches and is case-insensitive.
+
+### Response
+
+**Status Codes:**
+
+- **200 OK:** The data was successfully retrieved.
+  - **Body:** A JSON array of matching documents, each with the following fields:
+    - `id`: The document's unique ID as a string.
+    - `name`: The name of the uploaded file.
+    - `type`: The file's MIME type or `text` if plain text data was uploaded.
+    - `status`: The processing status of the file.
+    - `created_at`: The upload timestamp in ISO 8601 format.
+
+- **401 Unauthorized:** Authentication failed.
+  - **Possible Reasons:**
+    - **`"No Authentication Details Provided"`**: The `SessionID` header was missing or invalid.
+
+### Examples
+
+**Example 1: Retrieving All Documents for an Authenticated User**
+
+**Request:**
+```
+GET /get_data HTTP/1.1
+```
+
+**Response:**
+```json
+[
+  {
+    "_id": "67d64f45f59f788106434e81",
+    "original_name": "test_doc.docx",
+    "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "status": "processed",
+    "created_at": "2025-03-16T04:10:45"
+  }
+  ...
+]
+```
+
+**Example 2: Searching for Documents Matching a Keyword**
+
+**Request:**
+```
+GET /get_data?q=report HTTP/1.1
+```
+
+**Response:**
+```json
+[
+  {
+    "_id": "67d64f45f59f788106434e81",
+    "original_name": "final_report.txt",
+    "type": "text/plain",
+    "status": "processed",
+    "created_at": "2025-03-15T11:02:10"
+  }
+]
+```
+
+## `GET /get_data/<uuid>`
+
+### Description
+
+This endpoint retrieves data related to a specific document uploaded by the user, identified by its `uuid`. The document can be returned as plain text or as an original file, depending on the query parameters. The user must provide a valid `SessionID` to authenticate the request.
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/get_data/<uuid>`
+
+**Path Parameters:**
+
+- **uuid** (Required): The unique identifier (UUID) of the document. The document will be searched by this identifier.
+
+**Headers:**
+
+- **SessionID** (Required): A valid session token used to authenticate the user and fetch their associated data.
+
+**Query Parameters:**
+
+- **type** (Required): Specifies the format in which to return the data. Can be one of:
+  - `text`: Returns the document's content as plain text.
+  - `original`: Returns the original uploaded file (if saved).
+
+### Response
+
+**Status Codes:**
+
+- **200 OK:** The data was successfully retrieved.
+  - **Body:**
+    - If `type=text`: Returns the plain text content of the document.
+    - If `type=original`: Returns the file as an attachment with the appropriate file name in the Content-Disposition header. Returns a plain text, if data wasn't uploaded as a file.
+- **204 No Content:** The original file is not saved on the server.
+  - **Body:** No content (empty response).
+- **400 Bad Request:** The query parameter `type` is invalid.
+  - **Body:** `"Invalid type"`
+- **401 Unauthorized:** Authentication failed.
+  - **Body:** `"No Authentication Details Provided"`
+- **404 Not Found:** The document was not found or doesn't belong to the user.
+  - **Body:** `"Data not found"`
+- **500 Internal Server Error:** There was an error while attempting to read the file.
+  - **Body:** `"Failed to read file"`
+
+### Examples
+
+**Example 1: Retrieving Document as Plain Text**
+
+**Request:**
+```
+GET /get_data/67d64f45f59f788106434e81?type=text HTTP/1.1
+Host: localhost:3000
+```
+
+**Response:**
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+This is the plain text content of the document.
+```
+
+**Example 2: Retrieving Original Document (File)**
+
+**Request:**
+```
+GET /get_data/67d64f45f59f788106434e81?type=original HTTP/1.1
+Host: localhost:3000
+```
+
+**Response:**
+```
+HTTP/1.1 200 OK
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=lab_report.pdf
+
+... (file data) ...
 ```
