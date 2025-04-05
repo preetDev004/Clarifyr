@@ -286,3 +286,83 @@ GET /get_data?q=report HTTP/1.1
   }
 ]
 ```
+
+## `GET /get_data/<uuid>`
+
+### Description
+
+This endpoint retrieves data related to a specific document uploaded by the user, identified by its `uuid`. The document can be returned as plain text or as an original file, depending on the query parameters. The user must provide a valid `SessionID` to authenticate the request.
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/get_data/<uuid>`
+
+**Path Parameters:**
+
+- **uuid** (Required): The unique identifier (UUID) of the document. The document will be searched by this identifier.
+
+**Headers:**
+
+- **SessionID** (Required): A valid session token used to authenticate the user and fetch their associated data.
+
+**Query Parameters:**
+
+- **type** (Required): Specifies the format in which to return the data. Can be one of:
+  - `text`: Returns the document's content as plain text.
+  - `original`: Returns the original uploaded file (if saved).
+
+### Response
+
+**Status Codes:**
+
+- **200 OK:** The data was successfully retrieved.
+  - **Body:**
+    - If `type=text`: Returns the plain text content of the document.
+    - If `type=original`: Returns the file as an attachment with the appropriate file name in the Content-Disposition header. Returns a plain text, if data wasn't uploaded as a file.
+- **204 No Content:** The original file is not saved on the server.
+  - **Body:** No content (empty response).
+- **400 Bad Request:** The query parameter `type` is invalid.
+  - **Body:** `"Invalid type"`
+- **401 Unauthorized:** Authentication failed.
+  - **Body:** `"No Authentication Details Provided"`
+- **404 Not Found:** The document was not found or doesn't belong to the user.
+  - **Body:** `"Data not found"`
+- **500 Internal Server Error:** There was an error while attempting to read the file.
+  - **Body:** `"Failed to read file"`
+
+### Examples
+
+**Example 1: Retrieving Document as Plain Text**
+
+**Request:**
+```
+GET /get_data/67d64f45f59f788106434e81?type=text HTTP/1.1
+Host: localhost:3000
+```
+
+**Response:**
+```
+HTTP/1.1 200 OK
+Content-Type: text/plain
+
+This is the plain text content of the document.
+```
+
+**Example 2: Retrieving Original Document (File)**
+
+**Request:**
+```
+GET /get_data/67d64f45f59f788106434e81?type=original HTTP/1.1
+Host: localhost:3000
+```
+
+**Response:**
+```
+HTTP/1.1 200 OK
+Content-Type: application/octet-stream
+Content-Disposition: attachment; filename=lab_report.pdf
+
+... (file data) ...
+```
