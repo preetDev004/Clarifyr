@@ -3,6 +3,7 @@ import os
 import uuid
 from datetime import datetime
 import threading
+import re
 
 from flask import request, Response, json
 from loguru import logger
@@ -111,6 +112,7 @@ def upload_data():
 		)
 	
 	data["original-data"] = data["data"]
+	data["original-data"] = re.sub(r'\s+', ' ', data["original-data"]).strip()
 	data["data"] = preprocess_data(data["data"])
 	data_text = ' '.join(data["data"])
 
@@ -134,6 +136,7 @@ def upload_data():
 		"type": data["type"],
 		"size": data["size"],
 		"status": "processing",
+		"saved": save == "true",
 		"created_at": datetime.now(),
 		"updated_at": datetime.now()
 	})
