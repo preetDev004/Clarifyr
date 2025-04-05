@@ -207,3 +207,82 @@ HTTP/1.1 200 OK Content-Length: 25 Content-Type: text/html; charset=utf-8
 
 Data uploaded successfully!
 ```
+
+## `GET /get_data`
+
+### Description
+
+This endpoint retrieves uploaded expertise data associated with the authenticated user. The user must include a valid session token in the request headers. The endpoint supports fuzzy search over file names and content using a query string parameter.
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/get_data`
+
+**Headers:**
+
+- **SessionID** (Required): A valid session token used to authenticate the user and fetch their associated data.
+
+**Query Parameters:**
+
+- **q** (Optional): A search term to filter results by file name (`original_name`) or file content (`content`). Supports partial matches and is case-insensitive.
+
+### Response
+
+**Status Codes:**
+
+- **200 OK:** The data was successfully retrieved.
+  - **Body:** A JSON array of matching documents, each with the following fields:
+    - `id`: The document's unique ID as a string.
+    - `name`: The name of the uploaded file.
+    - `type`: The file's MIME type or `text` if plain text data was uploaded.
+    - `status`: The processing status of the file.
+    - `created_at`: The upload timestamp in ISO 8601 format.
+
+- **401 Unauthorized:** Authentication failed.
+  - **Possible Reasons:**
+    - **`"No Authentication Details Provided"`**: The `SessionID` header was missing or invalid.
+
+### Examples
+
+**Example 1: Retrieving All Documents for an Authenticated User**
+
+**Request:**
+```
+GET /get_data HTTP/1.1
+```
+
+**Response:**
+```json
+[
+  {
+    "_id": "67d64f45f59f788106434e81",
+    "original_name": "test_doc.docx",
+    "type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "status": "processed",
+    "created_at": "2025-03-16T04:10:45"
+  }
+  ...
+]
+```
+
+**Example 2: Searching for Documents Matching a Keyword**
+
+**Request:**
+```
+GET /get_data?q=report HTTP/1.1
+```
+
+**Response:**
+```json
+[
+  {
+    "_id": "67d64f45f59f788106434e81",
+    "original_name": "final_report.txt",
+    "type": "text/plain",
+    "status": "processed",
+    "created_at": "2025-03-15T11:02:10"
+  }
+]
+```

@@ -7,6 +7,7 @@ import re
 
 from flask import request, Response, json
 from loguru import logger
+from bson.json_util import dumps
 
 from utils.file import extract_file_data, validate_file, preprocess_data, nltk_chunking
 from utils.clerk import get_clerk_user_from_session
@@ -26,13 +27,12 @@ def upload_data():
 			status=401,
 			headers={
 				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "http://localhost:3000"
+				"Access-Control-Allow-Origin": os.getenv("API_URL")
 			}
 		)
 	# if SessionID is provided, get the Clerk's user id from it
 	user = get_clerk_user_from_session(session_id=session_id)
 	logger.debug("User ID from request: {}", user.id)
-	logger.debug("User Object: {}", user)
 
 	# Get request Content-Type
 	content_type = request.headers.get("Content-Type")
@@ -49,7 +49,7 @@ def upload_data():
 			status=400,
 			headers={
 				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "http://localhost:3000"
+				"Access-Control-Allow-Origin": os.getenv("API_URL")
 			}
 		)
 
@@ -149,6 +149,73 @@ def upload_data():
 
 	return Response(
 			json.dumps({"message": "Data uploaded successfully!"}),
+			status=200,
+			headers={
+				"Content-Type": "application/json"
+			}
+		)
+
+@app.route("/get_data", methods=['GET'])
+def get_data():
+	logger.info("GET /get_data route hit!")
+
+	# Get user session
+	session_id = request.headers.get('SessionID')
+	# If no SessionID provided, respond with Bad Request
+	if not session_id:
+		return Response(
+			json.dumps({"message": "No Authentication Details Provided"}),
+			status=401,
+			headers={
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": os.getenv("API_URL")
+			}
+		)
+	# if SessionID is provided, get the Clerk's user id from it
+	user = get_clerk_user_from_session(session_id=session_id)
+	logger.debug("User ID from request: {}", user.id)
+
+	# Get search query
+	search_query = request.args.get("q")
+	if not search_query:
+		search_query = ""
+	else:
+		# String escape a query
+		search_query = re.escape(search_query)
+		logger.debug(f"search query: {search_query}")
+
+	collection = get_mongo_client()["main"]["documents"]
+
+	# Search regex
+	regex = {"$regex": search_query, "$options": "i"}
+
+	# Retrieve all the expertise data that belongs to the user
+	results = collection.find({
+		"user_id": user.id,
+		"$or": [
+            {"original_name": regex},
+            {"content": regex}
+        ]
+	},
+	{
+		"id": { "$toString": "$_id" },
+		"name": "$original_name",
+		"type": 1,
+		"status": 1,
+		"created_at": {
+			"$dateToString": {
+				"format": "%Y-%m-%dT%H:%M:%S",
+				"date": "$created_at"
+			}
+		},
+		"_id": 0
+	})
+	results_str = dumps(results)
+
+	logger.debug("Search finished. {} Documents Found", len(list(results)))
+
+	return Response(
+			results_str,
 			status=200,
 			headers={
 				"Content-Type": "application/json"
