@@ -40,17 +40,23 @@ export const columns: ColumnDef<UserDocument>[] = [
     accessorKey: 'name',
     header: () => (
       <p className="my-2.5 font-semibold text-teal-700 dark:text-teal-300">
-        UserDocument
+        Doc Name
       </p>
     ),
     cell: ({ row }) => {
       const name = row.getValue('name') as string;
       return (
         <>
-          <span className="md:hidden">
-            {name.length > 30 ? `${name.substring(0, 20)}...` : name}
+          <span className="block lg:hidden">
+            {name.length > 30
+              ? `${name.substring(0, 20)}...` + `${name.slice(-6)}`
+              : name}
           </span>
-          <span className="hidden md:block">{name}</span>
+          <span className="hidden lg:block">
+            {name.length > 170
+              ? `${name.substring(0, 170)}...` + `${name.slice(-6)}`
+              : name}
+          </span>
         </>
       );
     },
@@ -63,7 +69,11 @@ export const columns: ColumnDef<UserDocument>[] = [
       </p>
     ),
     cell: ({ row }) => {
-      return <p className="hidden sm:block">{row.getValue('type')}</p>;
+      return (
+        <p className="hidden sm:block">
+          {((row.getValue('type') as string).split('/')[1] || '').toUpperCase()}
+        </p>
+      );
     },
   },
   {

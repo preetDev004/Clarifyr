@@ -5,7 +5,6 @@ export type UserDocument = {
   size: number;
   status: 'Processing' | 'Success' | 'Failed';
   createdAt: string;
-  updatedAt: string;
 };
 
 export type chatBot = {

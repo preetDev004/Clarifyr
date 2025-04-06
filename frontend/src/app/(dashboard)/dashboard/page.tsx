@@ -43,26 +43,6 @@ const MainDashboardPage = () => {
           </p>
         </div>
       )}
-      {bots.length ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {bots.map((bot, index) => (
-            <ChatbotCard key={index} bot={bot} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-12 flex w-full flex-col items-center justify-center sm:mt-24">
-          <Image
-            src={'/NoChatBot.svg'}
-            width={300}
-            height={300}
-            alt={'No Chat Bots'}
-            className="w-25 h-25 sm:w-50 sm:h-50"
-          />
-          <p className="text-center text-base text-muted-foreground">
-            You don't have any chat bots yet, Create one now!
-          </p>
-        </div>
-      )}
     </div>
   );
 };

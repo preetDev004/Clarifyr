@@ -17,21 +17,12 @@ const ChatbotCard = ({ bot }: { bot: chatBot }) => {
 
   return (
     <div
-<<<<<<< HEAD
       className="min-h-[280px] max-w-[400px] cursor-pointer rounded-lg border bg-teal-400/10 p-1 shadow-md transition-all duration-150 ease-in-out hover:shadow-lg dark:bg-teal-950/70"
-=======
-      className="min-h-[280px] max-w-[400px] cursor-pointer rounded-lg border bg-teal-300/5 p-1 shadow-md transition-all duration-150 ease-in-out hover:shadow-lg dark:bg-teal-950/70"
->>>>>>> 74bf733 (Added Chatbot metadata card)
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* inner */}
-<<<<<<< HEAD
       <div className="flex h-[90%] w-full flex-col justify-between gap-2 rounded-lg bg-white/60 p-3 dark:bg-custom-darkblue/70">
-=======
-      <div className="relative flex h-[90%] w-full flex-col justify-between gap-2 rounded-lg bg-white/60 p-3 dark:bg-custom-darkblue/70">
-        <div className="h-xs absolute inset-x-14 top-0 z-30 rounded-b-full bg-custom-teal p-0.5 shadow-md dark:bg-custom-hoverdark" />
->>>>>>> 74bf733 (Added Chatbot metadata card)
         {/* top */}
 
         <div className="flex items-center justify-start gap-2">
