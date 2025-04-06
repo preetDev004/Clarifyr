@@ -2,7 +2,7 @@
 import React from 'react';
 import { Switch } from './switch';
 
-const PersonaTrait = ({
+const CustomSwitch = ({
   title,
   description,
   isSelected,
@@ -35,4 +35,4 @@ const PersonaTrait = ({
   );
 };
 
-export default PersonaTrait;
+export default CustomSwitch;

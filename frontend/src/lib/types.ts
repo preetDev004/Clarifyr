@@ -2,6 +2,7 @@ export type UserDocument = {
   id: string;
   name: string;
   type: string;
+  saved: boolean;
   status: 'Processing' | 'Success' | 'Failed';
   createdAt: string;
 };

@@ -1,6 +1,6 @@
 'use client';
 import BotCardHeader from './bot-card-header';
-import PersonaTrait from './persona-trait';
+import CustomSwitch from './persona-trait';
 import { UsersRound } from 'lucide-react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
 import { CreateBotFormInputs } from '@/lib/types';
@@ -35,7 +35,7 @@ const PersonalitySection = ({ control, errors }: PersonalitySectionProps) => {
             <>
               {PERSONA_TRAITS &&
                 PERSONA_TRAITS.map((trait, index) => (
-                  <PersonaTrait
+                  <CustomSwitch
                     key={index}
                     title={trait.title}
                     description={trait.description}

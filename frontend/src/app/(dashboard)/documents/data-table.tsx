@@ -100,7 +100,7 @@ export function DataTable<TData extends UserDocument, TValue>({
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                 You don't have any documents yet.
+                  You don't have any documents yet.
                 </TableCell>
               </TableRow>
             )}

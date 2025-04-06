@@ -18,6 +18,7 @@ import { DialogHeader } from '../dialog';
 import { useDocuments } from '@/hooks/useDocuments';
 import Loader from '../loader';
 import Link from 'next/link';
+import { useDebounce } from '@/hooks/useDebounce';
 
 interface KnowledgeBaseSectionProps {
   control: Control<CreateBotFormInputs>;
@@ -30,12 +31,23 @@ const KnowledgeBaseSection = ({
 }: KnowledgeBaseSectionProps) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isDocumentModalOpen, setIsDocumentModalOpen] = useState(false);
-  // Only load documents when modal is open using forceEnable
-  const { documents: docs, isLoading } = useDocuments(isDocumentModalOpen);
 
-  const filteredDocuments = docs.filter((doc) =>
-    doc.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Debounce the search term to avoid excessive API calls
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
+  // Pass the debounced search term to the useDocuments hook
+  const { documents: docs, isLoading } = useDocuments({
+    forceEnable: isDocumentModalOpen,
+    searchQuery: debouncedSearchTerm,
+  });
+
+  // No need for client-side filtering anymore since the API handles it
+  // The filteredDocuments variable can be removed, use docs directly
+
+  // Update the search input handler
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
@@ -86,22 +98,22 @@ const KnowledgeBaseSection = ({
                         <div className="relative mb-4">
                           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                           <Input
-                            placeholder="Search documents..."
+                            placeholder="Search documents...(Name or Content)"
                             className="pl-10"
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={handleSearchChange}
                           />
                         </div>
                         <div className="scrollbar-hide max-h-[300px] space-y-2 overflow-y-auto scroll-smooth">
                           {isLoading ? (
                             <div className="-mt-14">
                               <Loader
-                                title="Loading Documents"
-                                description="Please wait... it may take a few seconds"
+                                title="Searching Documents"
+                                description="Please wait... retrieving your documents"
                               />
                             </div>
-                          ) : filteredDocuments.length > 0 ? (
-                            filteredDocuments.map((doc) => {
+                          ) : docs.length > 0 ? (
+                            docs.map((doc) => {
                               if (doc.status !== 'Success') return null;
                               return (
                                 <div
@@ -121,16 +133,19 @@ const KnowledgeBaseSection = ({
                                   }}
                                 >
                                   <div>
-                                    <p className="font-medium">{doc.name}</p>
+                                    <p className="font-medium">
+                                      {doc.name.length > 50
+                                        ? `${doc.name.substring(0, 50)}...`
+                                        : doc.name}
+                                    </p>
                                     <p className="text-sm text-muted-foreground/80">
-                                      {doc.type.split('/').pop()?.toUpperCase()}{' '}
-                                      | {doc.status}
+                                      {doc.type.split('/').pop()?.toUpperCase()}
                                     </p>
                                   </div>
                                   {value.includes(doc.id) ? (
-                                    <Check className="h-5 w-5 text-primary dark:text-custom-hoverdark" />
+                                    <Check className="h-5 w-5 flex-shrink-0 text-primary dark:text-custom-hoverdark" />
                                   ) : (
-                                    <Plus className="h-5 w-5 text-muted-foreground/80" />
+                                    <Plus className="h-5 w-5 flex-shrink-0 text-muted-foreground/80" />
                                   )}
                                 </div>
                               );
@@ -138,7 +153,9 @@ const KnowledgeBaseSection = ({
                           ) : (
                             <div className="flex flex-col items-center justify-center gap-2 p-4">
                               <p className="text-muted-foreground">
-                                No documents found.
+                                {searchTerm
+                                  ? 'No Matching Documents Found.'
+                                  : 'No Documents Found.'}
                               </p>
                               <Link
                                 href={'/documents'}
@@ -183,8 +200,7 @@ const KnowledgeBaseSection = ({
                                 : doc.name}
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {doc.type.split('/').pop()?.toUpperCase()} |{' '}
-                              {doc.status}
+                              {doc.type.split('/').pop()?.toUpperCase()}
                             </p>
                           </div>
 

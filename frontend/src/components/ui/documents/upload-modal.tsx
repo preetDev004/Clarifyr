@@ -9,13 +9,13 @@ import {
 } from '@/components/ui/dialog';
 import { chatApi } from '@/lib/api'; // adjust the import to your actual API location
 import { useSession } from '@clerk/nextjs';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Upload as UploadIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { VALID_FILE_TYPES } from '../../../../constants';
-import { getQueryClient } from '@/providers/query-provider';
+import CustomSwitch from '../chatbot/persona-trait';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -25,10 +25,11 @@ interface UploadModalProps {
 export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [saveFile, setSaveFile] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { session } = useSession();
-  const queryClient = getQueryClient();
+  const queryClient = useQueryClient();
 
   const validateFile = (file: File): boolean => {
     const maxSize = 25 * 1024 * 1024; // 25MB
@@ -85,8 +86,15 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   // React Query mutation for uploading a file
   const mutation = useMutation({
     mutationKey: ['uploadDocument'],
-    mutationFn: ({ file, sessionId }: { file: File; sessionId: string }) =>
-      chatApi.uploadDocument(file, sessionId),
+    mutationFn: ({
+      file,
+      sessionId,
+      save = false,
+    }: {
+      file: File;
+      sessionId: string;
+      save?: boolean;
+    }) => chatApi.uploadDocument(file, sessionId, save),
     onSuccess: () => {
       // invalidate queries to refetch documents
       queryClient.invalidateQueries({ queryKey: ['documents'] });
@@ -107,7 +115,11 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
   const handleConfirmUpload = () => {
     if (selectedFile && !mutation.isPending && session) {
-      mutation.mutate({ file: selectedFile, sessionId: session.id });
+      mutation.mutate({
+        file: selectedFile,
+        sessionId: session.id,
+        save: saveFile,
+      });
     }
   };
 
@@ -126,7 +138,7 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
         }
       }}
     >
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md lg:max-w-lg">
         <DialogHeader>
           <DialogTitle>Upload Document</DialogTitle>
           <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground" />
@@ -204,22 +216,34 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
               </div>
             </div>
 
-            <div className="flex gap-3">
-              <Button
-                onClick={handleConfirmUpload}
-                className="flex-1"
-                disabled={mutation.isPending}
-              >
-                <UploadIcon className="h-5 w-5" />
-                {mutation.isPending ? 'Uploading...' : 'Confirm Upload'}
-              </Button>
-              <Button
-                onClick={resetSelection}
-                className="btn-secondary flex-1"
-                disabled={mutation.isPending}
-              >
-                Cancel
-              </Button>
+            <div className="flex flex-col gap-3">
+              <div className="w-full">
+                <CustomSwitch
+                  title="Save Document (Optional)"
+                  description="This will save the document's content on your profile?"
+                  isSelected={saveFile}
+                  onToggle={(newValue) => {
+                    setSaveFile(newValue);
+                  }}
+                />
+              </div>
+              <div className="flex gap-3">
+                <Button
+                  onClick={handleConfirmUpload}
+                  className="flex-1"
+                  disabled={mutation.isPending}
+                >
+                  <UploadIcon className="h-5 w-5" />
+                  {mutation.isPending ? 'Uploading...' : 'Confirm Upload'}
+                </Button>
+                <Button
+                  onClick={resetSelection}
+                  className="btn-secondary flex-1"
+                  disabled={mutation.isPending}
+                >
+                  Cancel
+                </Button>
+              </div>
             </div>
           </div>
         )}

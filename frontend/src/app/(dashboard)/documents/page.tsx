@@ -5,16 +5,13 @@ import Loader from '@/components/ui/loader';
 import { useDocuments } from '@/hooks/useDocuments';
 import { UserDocument } from '@/lib/types';
 import { Upload } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { columns } from './columns';
 import { DataTable } from './data-table';
 
 const DocumentsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { documents, isLoading } = useDocuments();
-  useEffect(() => {
-    console.log('Documents:', documents);
-  }, [documents]);
+  const { documents, isLoading } = useDocuments({});
 
   if (isLoading)
     return (
