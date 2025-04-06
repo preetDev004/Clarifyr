@@ -9,12 +9,13 @@ import {
 } from '@/components/ui/dialog';
 import { chatApi } from '@/lib/api'; // adjust the import to your actual API location
 import { useSession } from '@clerk/nextjs';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Upload as UploadIcon } from 'lucide-react';
 import Image from 'next/image';
 import React, { useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { VALID_FILE_TYPES } from '../../../../constants';
+import { getQueryClient } from '@/providers/query-provider';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -27,7 +28,7 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   const [error, setError] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { session } = useSession();
-  const queryClient = useQueryClient();
+  const queryClient = getQueryClient();
 
   const validateFile = (file: File): boolean => {
     const maxSize = 25 * 1024 * 1024; // 25MB
@@ -84,9 +85,10 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
   // React Query mutation for uploading a file
   const mutation = useMutation({
     mutationKey: ['uploadDocument'],
-    mutationFn: ({ file, sessionId }: { file: File; sessionId: string }) => chatApi.uploadDocument(file, sessionId),
+    mutationFn: ({ file, sessionId }: { file: File; sessionId: string }) =>
+      chatApi.uploadDocument(file, sessionId),
     onSuccess: () => {
-      // Invalidate and refetch documents query after successful upload
+      // invalidate queries to refetch documents
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast.success('Uploaded!', {
         description: 'File uploaded successfully',
@@ -105,7 +107,6 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
   const handleConfirmUpload = () => {
     if (selectedFile && !mutation.isPending && session) {
-      console.log(session.id);
       mutation.mutate({ file: selectedFile, sessionId: session.id });
     }
   };

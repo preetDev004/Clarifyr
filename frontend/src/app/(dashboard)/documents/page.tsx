@@ -1,39 +1,30 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { UploadModal } from '@/components/ui/documents/upload-modal';
+import Loader from '@/components/ui/loader';
+import { useDocuments } from '@/hooks/useDocuments';
+import { UserDocument } from '@/lib/types';
 import { Upload } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { DataTable } from './data-table';
 import { columns } from './columns';
-import { useQuery } from '@tanstack/react-query';
-import { chatApi } from '@/lib/api';
-import { useSession } from '@clerk/nextjs';
-import Loader from '@/components/ui/loader';
+import { DataTable } from './data-table';
 
 const DocumentsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { session } = useSession();
-  const {
-    data: documents,
-    isLoading,
-    // error,
-  } = useQuery({
-    queryKey: ['documents', { sessionId: session?.id }],
-    queryFn: () => {
-      return session && chatApi.getAllDocuments(session?.id);
-    },
-    enabled: !!session?.id, // Only run query when session.id exists
-    refetchInterval: 10000, // Refetch every 10 seconds
-  });
+  const { documents, isLoading } = useDocuments();
   useEffect(() => {
     console.log('Documents:', documents);
-  }, [documents])
-  
-  if (isLoading) return (
-    <div className="flex items-center justify-center h-[50vh]">
-      <Loader title="Loading Documents" description="Please wait... it may take a few seconds" />
-    </div>
-  );
+  }, [documents]);
+
+  if (isLoading)
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <Loader
+          title="Loading Documents"
+          description="Please wait... it may take a few seconds"
+        />
+      </div>
+    );
 
   return (
     <div className="mt-6 flex flex-col justify-center gap-6 sm:gap-8">
@@ -58,7 +49,7 @@ const DocumentsPage = () => {
       </div>
 
       {/* display documents */}
-      <DataTable columns={columns} data={documents || []} />
+      <DataTable columns={columns} data={(documents as UserDocument[]) || []} />
     </div>
   );
 };

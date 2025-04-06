@@ -1,3 +1,5 @@
+import { UserDocument } from './types';
+
 const uploadDocument = async (file: File, sessionId: string) => {
   try {
     const formData = new FormData();
@@ -25,7 +27,7 @@ const uploadDocument = async (file: File, sessionId: string) => {
   }
 };
 
-const getAllDocuments = async (sessionId: string) => {
+const getAllDocuments = async (sessionId: string): Promise<UserDocument[]> => {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/get_data`,
@@ -45,7 +47,7 @@ const getAllDocuments = async (sessionId: string) => {
     console.log('Get all documents failed:', error);
     throw error;
   }
-}
+};
 
 export const chatApi = {
   uploadDocument,

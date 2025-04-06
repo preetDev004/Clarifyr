@@ -2,7 +2,6 @@ export type UserDocument = {
   id: string;
   name: string;
   type: string;
-  size: number;
   status: 'Processing' | 'Success' | 'Failed';
   createdAt: string;
 };
@@ -17,4 +16,13 @@ export type chatBot = {
   allowedDomains: string[];
   createdAt: string;
   updatedAt: string;
+};
+
+export type CreateBotFormInputs = {
+  botName: string;
+  botDescription: string;
+  openingMessage: string;
+  selectedDocs: string[];
+  botPersona: string[];
+  allowedDomains: string[];
 };
