@@ -4,7 +4,17 @@
 import { Checkbox } from '@/components/ui/checkbox';
 import { UserDocument } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { MoreVertical } from 'lucide-react';
+import { Eye, MoreVertical, Trash } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { DocumentViewerModal } from '@/components/ui/documents/document-viewer-modal';
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
@@ -69,9 +79,10 @@ export const columns: ColumnDef<UserDocument>[] = [
       </p>
     ),
     cell: ({ row }) => {
+      const type = (row.getValue('type') as string).split('/')[1] || '';
       return (
         <p className="hidden sm:block">
-          {((row.getValue('type') as string).split('/')[1] || '').toUpperCase()}
+          {(type.length > 5 ? 'DOCX' : type).toUpperCase()}
         </p>
       );
     },
@@ -111,24 +122,55 @@ export const columns: ColumnDef<UserDocument>[] = [
   {
     id: 'actions',
     header: () => {
-      //   const selectedCount = table.getSelectedRowModel().rows.length;
-
-      //   if (selectedCount === 0) {
-      //     return <div className="w-8 p-2" />;
-      //   }
-
       return (
         <p className="my-2.5 flex justify-center font-semibold text-teal-700 dark:text-teal-300">
           Actions
         </p>
       );
     },
-    cell: () => {
-      return (
-        <div className="flex justify-center">
-          <MoreVertical className="h-4 w-4" />
-        </div>
-      );
+    cell: ({ row }) => {
+      const document = row.original;
+
+      return <DocumentActions document={document} />;
     },
   },
 ];
+
+const DocumentActions = ({ document }: { document: UserDocument }) => {
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+
+  return (
+    <div className="flex justify-center">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size={'icon'} className="p-0">
+            <MoreVertical className="h-4 w-4 cursor-pointer" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-48">
+          {document.saved && (
+            <DropdownMenuItem onClick={() => setIsViewerOpen(true)}>
+              <Eye className="mr-2 h-4 w-4" /> View Content
+            </DropdownMenuItem>
+          )}
+          <DropdownMenuItem
+            className="text-red-600"
+            onClick={() => console.log('Delete document', document.id)}
+          >
+            <Trash className="mr-2 h-4 w-4" /> Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {document.saved && (
+        <DocumentViewerModal
+          isOpen={isViewerOpen}
+          onClose={() => setIsViewerOpen(false)}
+          documentId={document.id}
+          documentType={document.type}
+          documentName={document.name}
+        />
+      )}
+    </div>
+  );
+};

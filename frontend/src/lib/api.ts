@@ -62,7 +62,30 @@ const getAllDocuments = async (
   }
 };
 
+const getDocumentContent = async (sessionId: string, docId: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/get_data/${docId}?type=original`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch documents');
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.log('Get all documents failed:', error);
+    throw error;
+  }
+};
+
 export const chatApi = {
   uploadDocument,
   getAllDocuments,
+  getDocumentContent,
 };
