@@ -65,6 +65,8 @@ const getAllDocuments = async (
 const getDocumentContent = async (sessionId: string, docId: string) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/get_data/${docId}?type=original`;
+
+    // Fetch as arrayBuffer to handle binary data properly
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -74,12 +76,28 @@ const getDocumentContent = async (sessionId: string, docId: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch documents');
+      throw new Error(
+        `Failed to fetch document: ${response.status} ${response.statusText}`
+      );
     }
 
-    return await response.text();
+    // Handle the response based on the content type
+    const contentType = response.headers.get('Content-Type') || '';
+
+    if (contentType.includes('application/json')) {
+      // If it's JSON, parse it
+      return await response.json();
+    } else if (contentType.includes('text/')) {
+      // If it's text, get as text
+      return await response.text();
+    } else {
+      // For binary formats (PDF, DOCX, etc.), get as ArrayBuffer
+      const arrayBuffer = await response.arrayBuffer();
+      // Convert to a format suitable for creating Blobs
+      return arrayBuffer;
+    }
   } catch (error) {
-    console.log('Get all documents failed:', error);
+    console.error('Get document content failed:', error);
     throw error;
   }
 };
