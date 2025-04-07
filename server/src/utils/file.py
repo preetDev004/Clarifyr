@@ -119,7 +119,7 @@ def nltk_chunking(words, file_name, chunk_size=128):
 		# Update file processing status
 		collection.update_one(
 			{"name": file_name},
-			{"$set": {"status": "success"}}
+			{"$set": {"status": "Success"}}
 		)
 
 		logger.debug("File processing completed successfully")
@@ -129,5 +129,5 @@ def nltk_chunking(words, file_name, chunk_size=128):
 		# Update file processing status
 		collection.update_one(
 			{"name": file_name},
-			{"$set": {"status": "failed"}}
+			{"$set": {"status": "Failed"}}
 		)
