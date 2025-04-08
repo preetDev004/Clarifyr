@@ -1,7 +1,7 @@
 import React from 'react';
 
-const page = () => {
+const AnalyticsPage = () => {
   return <div>Analytics</div>;
 };
 
-export default page;
+export default AnalyticsPage;

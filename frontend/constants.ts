@@ -3,6 +3,25 @@ export const VALID_FILE_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'text/plain',
 ];
+
+export const PERSONA_TRAITS = [
+  {
+    title: 'Direct & Concise',
+    description: 'Provides clear, straightforward responses',
+  },
+  {
+    title: 'Friendly & Conversational',
+    description: 'Uses warm, conversational language',
+  },
+  {
+    title: 'Detailed & Thorough',
+    description: 'Provides comprehensive, detailed information',
+  },
+  {
+    title: 'Creative & Engaging',
+    description: 'Uses varied, interesting language styles',
+  },
+];
 export const TESTIMONIALS = [
   {
     quote:
@@ -112,3 +131,32 @@ export const customAppearance = {
     colorText: '#071E22', // Peach color
   },
 };
+
+//! TODO - REMOVE AFTER API INTEGRATION
+import { chatBot } from '@/lib/types';
+
+export const bots: chatBot[] = [
+  {
+    id: 'abcdef01-2345-6789-abcd-ef0459456789',
+    botName: 'Alison',
+    botDescription:
+      'This will bot will help users with their queries which are related to the our products and services.',
+    openingMessage: 'Hello, how can I help you?',
+    selectedDocs: ['550e8400-e29b-41d4-a716-446655440000'],
+    botPersona: ['Friendly & Conversational', 'Creative & Engaging'],
+    allowedDomains: ['chatspark.com', 'example.com'],
+    createdAt: '2025-03-15T11:10:00Z',
+    updatedAt: '2025-03-16T13:00:00Z',
+  },
+  {
+    id: 'abcdef01-2345-6789-abcd-ef0123453439',
+    botName: 'User Guide',
+    botDescription: 'This is a description',
+    openingMessage: 'Hello, how can I help you?',
+    selectedDocs: ['550e8400-e29b-41d4-a716-446655440000'],
+    botPersona: ['Creative & Engaging'],
+    allowedDomains: ['example.com', 'chatspark.com', 'support.com'],
+    createdAt: '2025-03-15T11:10:00Z',
+    updatedAt: '2025-03-15T11:10:00Z',
+  },
+];

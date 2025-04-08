@@ -136,7 +136,7 @@ def upload_data():
 		"content": data["original-data"],
 		"type": data["type"],
 		"size": data["size"],
-		"status": "processing",
+		"status": "Processing",
 		"saved": save == "true",
 		"created_at": datetime.now(),
 		"updated_at": datetime.now()

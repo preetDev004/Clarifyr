@@ -194,6 +194,7 @@ export default {
         marquee: 'marquee var(--duration) infinite linear',
         'marquee-vertical': 'marquee-vertical var(--duration) linear infinite',
         'timeline-flow': 'timeline-flow 5s linear forwards',
+        'spin-fast': 'spin 0.5s linear infinite',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

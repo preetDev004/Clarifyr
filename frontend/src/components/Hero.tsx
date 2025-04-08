@@ -85,7 +85,7 @@ export default function Hero() {
             <span className="font-bold text-custom-teal dark:text-white">
               1,000+
             </span>{' '}
-            businesses trust Pragyai
+            businesses trust Clarifyr
           </p>
         </motion.div>
       </div>
