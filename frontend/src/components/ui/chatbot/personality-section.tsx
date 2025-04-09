@@ -23,7 +23,7 @@ const PersonalitySection = ({ control, errors }: PersonalitySectionProps) => {
       />
       <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
         <Controller
-          name="botPersona"
+          name="personality_traits"
           control={control}
           rules={{
             validate: {
@@ -48,9 +48,9 @@ const PersonalitySection = ({ control, errors }: PersonalitySectionProps) => {
                     }}
                   />
                 ))}
-              {errors.botPersona && (
+              {errors.personality_traits && (
                 <p className="bottom-0 text-xs text-red-500">
-                  {errors.botPersona.message}
+                  {errors.personality_traits.message}
                 </p>
               )}
             </>

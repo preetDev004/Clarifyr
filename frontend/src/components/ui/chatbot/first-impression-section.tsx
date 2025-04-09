@@ -33,7 +33,7 @@ const FirstImpressionSection = ({
           </label>
           <div className="relative">
             <Input
-              {...register('botName', {
+              {...register('name', {
                 required: 'Bot name is required',
                 validate: {
                   notEmpty: validateNotOnlyWhitespace,
@@ -47,16 +47,16 @@ const FirstImpressionSection = ({
               })}
               placeholder="e.g. Chatty Charlie"
               className={`w-full ${
-                errors.botName
+                errors.name
                   ? 'border border-red-500 focus:border-red-500'
                   : 'border border-input'
               } `}
               id="bot-name"
             />
-            {errors.botName && (
+            {errors.name && (
               <div className="absolute h-0 w-full">
                 <p className="absolute mt-1 text-xs text-red-500">
-                  {errors.botName.message}
+                  {errors.name.message}
                 </p>
               </div>
             )}
@@ -69,7 +69,7 @@ const FirstImpressionSection = ({
           </label>
           <div className="relative">
             <Textarea
-              {...register('botDescription', {
+              {...register('description', {
                 required: 'Bot description is required',
                 validate: {
                   notEmpty: validateNotOnlyWhitespace,
@@ -83,17 +83,17 @@ const FirstImpressionSection = ({
               })}
               rows={3}
               className={`w-full ${
-                errors.botDescription
+                errors.description
                   ? 'border border-red-500 focus:border-red-500'
                   : 'border border-input'
               } `}
               placeholder="e.g. A bot that helps users discover new things and get answers to their questions."
               id="bot-description"
             />
-            {errors.botDescription && (
+            {errors.description && (
               <div className="absolute h-0 w-full">
                 <p className="absolute mt-1 text-xs text-red-500">
-                  {errors.botDescription.message}
+                  {errors.description.message}
                 </p>
               </div>
             )}
@@ -106,7 +106,7 @@ const FirstImpressionSection = ({
           </label>
           <div className="relative">
             <Textarea
-              {...register('openingMessage', {
+              {...register('welcome_message', {
                 required: 'Opening message is required',
                 validate: {
                   notEmpty: validateNotOnlyWhitespace,
@@ -120,19 +120,19 @@ const FirstImpressionSection = ({
               })}
               rows={3}
               className={`w-full ${
-                errors.openingMessage
+                errors.welcome_message
                   ? 'border border-red-500 focus:border-red-500'
                   : 'border border-input'
               } `}
               placeholder="e.g. Hey there! I'm Chatty Charlie. What can I help you discover today?"
               id="opening-message"
             />
-            {errors.openingMessage && (
+            {errors.welcome_message && (
               <p className="mt-1 text-xs text-red-500">
-                {errors.openingMessage.message}
+                {errors.welcome_message.message}
               </p>
             )}
-            {!errors.openingMessage && (
+            {!errors.welcome_message && (
               <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
                 This is your bot's chance to make a stellar first impression.
                 Make it count!
