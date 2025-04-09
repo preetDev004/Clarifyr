@@ -100,10 +100,6 @@ def shutdown_db_connection():
         logger.info("Disconnected from MongoDB!")
     except Exception as e:
         raise Exception("Error while discconnecting from the db: ", e)
-    
-def get_mongo_client():
-    global mongo_client
-    return mongo_client
 
 def get_database():
     db_name = os.getenv("DB_NAME", "main")

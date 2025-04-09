@@ -9,7 +9,7 @@ import textract
 from qdrant_client.models import PointStruct
 
 from config.file_upload import allowed_file_extensions, maximum_file_size
-from utils.mongodb import get_mongo_client
+from utils.mongodb import get_database
 import utils.nlp
 from utils.nlp import model, qdrant_client
 
@@ -81,7 +81,7 @@ def preprocess_data(text):
 	return filtered_tokens
 
 def nltk_chunking(words, file_name, chunk_size=128):
-	collection = get_mongo_client()["main"]["documents"]
+	collection = get_database()["documents"]
 
 	try:
 		# Token by token chunking with 50% overlap

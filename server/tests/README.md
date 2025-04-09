@@ -19,10 +19,10 @@
    ```
 5. Execute all tests
    ```bash
-   pytest tests/ -v
+   PYTHONPATH=/server pytest tests/ -v
    ```
 
    to view debug messages run:
    ```bash
-   pytest tests/ -v --capture=no
+   PYTHONPATH=/server pytest tests/ -v --capture=no
    ```
