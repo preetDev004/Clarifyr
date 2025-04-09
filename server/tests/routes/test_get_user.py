@@ -1,9 +1,9 @@
 import pytest
 import requests
-from utils.mongodb import get_mongo_client
+from conftest import get_database
 
 BASE_URL = "http://localhost:3000"
-SESSION_ID = "sess_2umNljXprzbOPAZwD8N4K8w8R20"
+SESSION_ID = "sess_2vSeCI4emZZfIMOCbUnCazwJUgk"
 USER_ID = "user_2umMsXVm6zvIqECbVKtygzjtrJO"
 
 @pytest.fixture
@@ -13,7 +13,15 @@ def headers():
 
 @pytest.mark.order(5)
 def test_get_user_success(headers):
-    """Test successful retrieval of user data with matching user_id."""
+    db = get_database()
+    db["users"].insert_one({
+        "user_id": USER_ID,
+        "username": None,
+        "first_name": None,
+        "last_name": None,
+        "email_address": "3bochoz3@gmail.com"
+    })
+    
     response = requests.get(f"{BASE_URL}/user/{USER_ID}", headers=headers)
     assert response.status_code == 200
     assert response.json()["user_id"] == USER_ID
