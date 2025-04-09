@@ -63,7 +63,7 @@ def create_chatbot():
         elif "not a valid ObjectId" in str(e):
             response = Response(
                 json.dumps({
-                    "message" : "Invalid Chatbot ID provided for Expertise Docs"
+                    "message" : "Invalid Document ID provided for Expertise Docs"
                 }),
                 status=400,
                 headers={"Content-Type": "application/json"}    
@@ -190,7 +190,7 @@ def get_chatbot(chatbot_id):
                     except Exception as e:
                         logger.error("Error while preparing an update object: {}", e)
                         response = Response(
-                            json.dumps({'message': 'Invalid Chatbot ID provided for Expertise Docs'}),
+                            json.dumps({'message': 'Invalid Document ID provided for Expertise Docs'}),
                             status=400,
                             headers={"Content-Type": "application/json"}    
                         )

@@ -445,7 +445,7 @@ This endpoint is responsible for creating a chatbot representation in MongoDB At
 * **400 Bad Request** (One of IDs in `expertise_docs` could not be converted to MongoDB `ObjectId`)
     ```json
     {
-        "message": "Invalid Chatbot ID provided for Expertise Docs"
+        "message": "Invalid Document ID provided for Expertise Docs"
     }
     ```
 
@@ -694,7 +694,7 @@ This endpoint is responsible for updating a chatbot representation in MongoDB At
 * **400 Bad Request** (One of IDs in `expertise_docs` could not be converted to MongoDB `ObjectId`)
     ```json
     {
-        "message": "Invalid Chatbot ID provided for Expertise Docs"
+        "message": "Invalid Document ID provided for Expertise Docs"
     }
     ```
 
