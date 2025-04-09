@@ -473,32 +473,7 @@ This endpoint returns all chatbots created by a given user. User indentity is pu
     ```json
     [
         {
-            "_id": {
-                "$oid": "67f5ed624428a7d31929b93a"
-            },
-            "name": "my chatbot2",
-            "description": null,
-            "welcome_message": null,
-            "personality_traits": null,
-            "expertise_docs": [
-                {
-                    "$oid": "67d64f45f59f788106434e81"
-                },
-                {
-                    "$oid": "67d64fde9a82716d39dcbca1"
-                }
-            ],
-            "whitelist_domains": [
-                "localhost:8080",
-                "0.0.0.0:3001"
-            ],
-            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
-        },
-        {
-            "_id": {
-                "$oid": "67f5f79d941bce2ef8e2e586"
-            },
-            "name": "my chatbot3",
+            "name": "my chatbot",
             "description": "my description",
             "welcome_message": "hello there!",
             "personality_traits": [
@@ -506,19 +481,18 @@ This endpoint returns all chatbots created by a given user. User indentity is pu
                 "Patient",
                 "Talkative"
             ],
-            "expertise_docs": [
-                {
-                    "$oid": "67d64f45f59f788106434e81"
-                },
-                {
-                    "$oid": "67d64fde9a82716d39dcbca1"
-                }
-            ],
             "whitelist_domains": [
                 "localhost:8080",
                 "0.0.0.0:3001"
             ],
-            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv",
+            "id": "67f6a113db96c0ba1a521510",
+            "expertise_docs": [
+                "67d64f45f59f788106434e81",
+                "67d64fde9a82716d39dcbca1"
+            ],
+            "created_at": "2025-04-09T16:32:19.661Z",
+            "updated_at": "2025-04-09T16:32:19.661Z"
         }
     ]
     ```
@@ -558,10 +532,7 @@ This endpoint returns a specific chatbot's information by a given `chatbot_id`. 
 * **200 Ok**<a id="chatbot_schema"></a>
     ```json
     {
-        "_id": {
-            "$oid": "67f5f79d941bce2ef8e2e586"
-        },
-        "name": "my chatbot3",
+        "name": "my chatbot",
         "description": "my description",
         "welcome_message": "hello there!",
         "personality_traits": [
@@ -569,19 +540,18 @@ This endpoint returns a specific chatbot's information by a given `chatbot_id`. 
             "Patient",
             "Talkative"
         ],
-        "expertise_docs": [
-            {
-                "$oid": "67d64f45f59f788106434e81"
-            },
-            {
-                "$oid": "67d64fde9a82716d39dcbca1"
-            }
-        ],
         "whitelist_domains": [
             "localhost:8080",
             "0.0.0.0:3001"
         ],
-        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv",
+        "id": "67f6a113db96c0ba1a521510",
+        "expertise_docs": [
+            "67d64f45f59f788106434e81",
+            "67d64fde9a82716d39dcbca1"
+        ],
+        "created_at": "2025-04-09T16:32:19.661Z",
+        "updated_at": "2025-04-09T16:32:19.661Z"
     }
     ```
 
@@ -613,10 +583,10 @@ This endpoint returns a specific chatbot's information by a given `chatbot_id`. 
 This endpoint is responsible for updating a chatbot representation in MongoDB Atlas Database. It requires a `SessionID` header to be set in the request to authenticate the user who is updating the chatbot. Note that the following rules apply to the body of this request:
 
 * The body of this request is supposed to be a **partial** representation of the chatbot document in MongoDB
-* **Every** field passed in the body will be updated in the database for the document with id of `chatbot_id`
+* **Every** field passed in the body will be updated in the database for the document with id of `chatbot_id`, **unless** field's value is `null`
 * If any fields are **missing** from the body, they will be left unchanged
 * If the request introduces any **new fields** to the schema, they will be **disregarded** *(See [this example](#chatbot_schema) for a full chatbot schema)*
-* If any fields that are **forbidden for change** are passed in the body (such as `id`, `_id`, `name`, or `created_by`), they are **disregarded** *(See [this example](#recommended_patch_chatbot_body) for fields that can be updated with this request)*
+* If any fields that are **forbidden for change** are passed in the body (such as `id`, `_id`, `name`, `created_by`, `created_at`, or `updated_at`), they are **disregarded** *(See [this example](#recommended_patch_chatbot_body) for fields that can be updated with this request)*
 
 ### Request
 
@@ -660,27 +630,26 @@ This endpoint is responsible for updating a chatbot representation in MongoDB At
 * **200 Ok**
     ```json
     {
-        "_id": {
-            "$oid": "67f60ba2652ca18bb578055c"
-        },
-        "name": "my chatbot3",
+        "name": "my chatbot",
         "description": "updated description",
-        "welcome_message": "hello there!",
+        "welcome_message": "updated welcome message",
         "personality_traits": [
             "Caring",
             "Patient",
             "Talkative"
         ],
-        "expertise_docs": [
-            {
-                "$oid": "123123123123123123123123"
-            }
-        ],
         "whitelist_domains": [
             "localhost:8080",
             "0.0.0.0:3001"
         ],
-        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv",
+        "id": "67f6a113db96c0ba1a521510",
+        "expertise_docs": [
+            "67d64f45f59f788106434e81",
+            "67d64fde9a82716d39dcbca1"
+        ],
+        "created_at": "2025-04-09T16:32:19.661Z",
+        "updated_at": "2025-04-09T16:34:48.686Z"
     }
     ```
 

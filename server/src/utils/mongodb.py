@@ -57,7 +57,7 @@ chatbots_schema = {
     "validator": {
         "$jsonSchema": {
             "bsonType": "object",
-            "required": ["name", "expertise_docs", "created_by", "whitelist_domains"],
+            "required": ["name", "expertise_docs", "created_by", "whitelist_domains", "created_at", "updated_at"],
             "properties": {
                 "name": {
                     "bsonType": "string"
@@ -76,7 +76,13 @@ chatbots_schema = {
                     "items": {
                         "bsonType": "string"
                     }
-                }
+                },
+                "created_at": {
+                    "bsonType": "date"
+                },
+                "updated_at": {
+                    "bsonType": "date"
+                },
             }
         }
     }
