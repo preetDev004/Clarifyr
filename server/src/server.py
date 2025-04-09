@@ -6,6 +6,7 @@ from app import app
 import routes.expertise_data
 import routes.signup
 import routes.get_user
+import routes.chatbot_interface
 import routes.chatbots
 
 if __name__ == '__main__':

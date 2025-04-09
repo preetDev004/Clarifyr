@@ -33,6 +33,12 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
+        <head>
+          <script
+            src="http://localhost:3000/chatbot_interface?cid=67f6a113db96c0ba1a521510"
+            async
+          ></script>
+        </head>
         <body
           className={`${inter.variable} ${lexend.variable} antialiased`}
           suppressHydrationWarning
