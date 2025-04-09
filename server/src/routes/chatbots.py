@@ -6,6 +6,7 @@ from utils.mongodb import get_database
 from bson import json_util
 from bson.objectid import ObjectId
 import os
+from pymongo import ReturnDocument
 
 @app.route("/chatbot", methods=["POST"])
 def create_chatbot():
@@ -59,6 +60,14 @@ def create_chatbot():
                 status=400,
                 headers={"Content-Type": "application/json"}    
             )
+        elif "not a valid ObjectId" in str(e):
+            response = Response(
+                json.dumps({
+                    "message" : "Invalid Chatbot ID provided for Expertise Docs"
+                }),
+                status=400,
+                headers={"Content-Type": "application/json"}    
+            )
         else:
             response = Response(
                 json.dumps({"message" : "Internal Error"}),
@@ -67,6 +76,9 @@ def create_chatbot():
             )
         return response
     
+
+
+
     
 @app.route('/chatbots', methods=['GET'])
 def get_user_chatbots():
@@ -93,7 +105,7 @@ def get_user_chatbots():
         return response
     
     except Exception as e:
-        logger.error("Error while inserting a chatbot: {}", e)
+        logger.error("Error while fetching chatbots: {}", e)
                
         response = Response(
             json.dumps({"message" : "Internal Error"}),
@@ -101,4 +113,109 @@ def get_user_chatbots():
             headers={"Content-Type": "application/json"}    
         )
         return response
+
+
+
+
+
     
+@app.route('/chatbot/<chatbot_id>', methods=['GET', 'PATCH'])
+def get_chatbot(chatbot_id):
+    response = None
+    auth = get_clerk_user(request.headers)
+    if not auth["successful"]:
+        return auth["response"]
+    clerk_user = auth["user"]
+    
+    collection = get_database()["chatbots"]
+    
+    chatbot=None
+    
+    # fetch the target chatbot
+    try:
+        chatbot = collection.find_one({
+            "_id": ObjectId(chatbot_id),
+            "created_by": clerk_user.id
+        })
+        logger.debug("found a chatbot {}: \n{}", chatbot_id, chatbot)
+        
+        if not chatbot:
+            response = Response(
+                json.dumps({"message": f"No chatbot with ID \'{chatbot_id}\' found!"}),
+                status=404,
+                headers={"Content-Type": "application/json"} 
+            )
+            return response
+        
+    except Exception as e:
+        logger.error("Error while fetching a chatbot: {}", e)
+        
+        if "not a valid ObjectId" in str(e):
+            response = Response(
+                json.dumps({"message" : "Invalid Chatbot ID"}),
+                status=400,
+                headers={"Content-Type": "application/json"}    
+            )
+        else:    
+            response = Response(
+                json.dumps({"message" : "Internal Error"}),
+                status=500,
+                headers={"Content-Type": "application/json"}    
+            )
+        return response
+    
+    if request.method == 'GET':
+        logger.info("GET /chatbot/<chatbot_id> hit!")
+        response = Response(
+            json_util.dumps(chatbot),
+            status=200,
+            headers={"Content-Type": "application/json"}    
+        )
+        return response
+    
+    elif request.method == 'PATCH':
+        logger.info("PATCH /chatbot/<chatbot_id> hit!")
+        # construct the update object from the request
+        req_json = request.get_json()
+        logger.debug("PATCH /chatbot/<chatbot_id> request JSON: \n{}", req_json)
+        update_object = {"$set": {}}
+        forbidden_for_change = ['name', "_id", "id", "created_by"]
+        for key, value in req_json.items():
+            if key in chatbot and key not in forbidden_for_change:
+                if key == 'expertise_docs':
+                    try:
+                        update_object["$set"][f"{key}"] = list(map(
+                            lambda x: ObjectId(x), value
+                        ))
+                    except Exception as e:
+                        logger.error("Error while preparing an update object: {}", e)
+                        response = Response(
+                            json.dumps({'message': 'Invalid Chatbot ID provided for Expertise Docs'}),
+                            status=400,
+                            headers={"Content-Type": "application/json"}    
+                        )
+                        return response
+                else:
+                    update_object["$set"][f"{key}"] = value
+        logger.debug("update object: \n{}",update_object)
+        
+        try:
+            updated_chatbot = collection.find_one_and_update(
+                {"_id": ObjectId(chatbot_id)},
+                update_object,
+                return_document=ReturnDocument.AFTER
+            )
+            response = Response(
+                json_util.dumps(updated_chatbot),
+                status=200,
+                headers={"Content-Type": "application/json"}    
+            )
+            return response
+        except Exception as e:
+            logger.error("Error while updating a chatbot: {}", e)
+            response = Response(
+                json.dumps({"message" : "Internal Error"}),
+                status=500,
+                headers={"Content-Type": "application/json"}    
+            )
+            return response
