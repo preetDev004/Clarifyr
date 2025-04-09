@@ -1,8 +1,9 @@
 import pytest
 import requests
+from conftest import get_database
 
 BASE_URL = "http://localhost:3000"
-SESSION_ID = "sess_2umNljXprzbOPAZwD8N4K8w8R20"
+SESSION_ID = "sess_2vSeCI4emZZfIMOCbUnCazwJUgk"
 
 @pytest.fixture
 def headers():
@@ -25,7 +26,15 @@ def test_signup_no_session_id():
 
 @pytest.mark.order(4)
 def test_signup_user_already_exists(headers):
-    """Test signup when the user already exists in MongoDB."""
+    db = get_database()
+    db["users"].insert_one({
+        "user_id": "user_2umMsXVm6zvIqECbVKtygzjtrJO",
+        "username": None,
+        "first_name": None,
+        "last_name": None,
+        "email_address": "3bochoz3@gmail.com"
+    })
+    
     response = requests.post(f"{BASE_URL}/signup", headers=headers)
     assert response.status_code == 400
     assert response.json()["message"] == "This User already exists"

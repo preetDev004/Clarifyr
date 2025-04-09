@@ -12,7 +12,7 @@ from bson import ObjectId
 
 from utils.file import extract_file_data, validate_file, preprocess_data, nltk_chunking
 from utils.clerk import get_clerk_user_from_session
-from utils.mongodb import get_mongo_client
+from utils.mongodb import get_database
 
 @app.route("/upload_data", methods=['POST'])
 def upload_data():
@@ -127,7 +127,7 @@ def upload_data():
 		logger.debug(f"Data: {data_text}")
 
 	# insert the new document in mongodb database
-	collection = get_mongo_client()["main"]["documents"]
+	collection = get_database()["documents"]
 
 	ins = collection.insert_one({
 		"name": data["name"],
@@ -185,7 +185,7 @@ def get_data():
 		search_query = re.escape(search_query)
 		logger.debug(f"search query: {search_query}")
 
-	collection = get_mongo_client()["main"]["documents"]
+	collection = get_database()["documents"]
 
 	# Search regex
 	regex = {"$regex": search_query, "$options": "i"}
@@ -248,7 +248,7 @@ def get_data_by_id(uuid):
 	type = request.args.get("type")
 	logger.debug(f"type: {type}")
 
-	collection = get_mongo_client()["main"]["documents"]
+	collection = get_database()["documents"]
 	
 	# Retreive data by id
 	result = collection.find_one({

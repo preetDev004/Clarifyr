@@ -2,7 +2,7 @@ from __main__ import app
 from flask import request, Response, json
 from loguru import logger
 import os
-from utils.mongodb import get_mongo_client
+from utils.mongodb import get_database
 from utils.auth import get_clerk_user
 
 @app.route("/signup", methods = ["POST"])
@@ -16,7 +16,7 @@ def signup():
     user = auth["user"]
     
     # insert the new user in mongodb database
-    collection = get_mongo_client()["main"]["users"]
+    collection = get_database()["users"]
     
     try:
         ins = collection.insert_one({

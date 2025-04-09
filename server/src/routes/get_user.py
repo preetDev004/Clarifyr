@@ -2,7 +2,7 @@ from __main__ import app
 from flask import request, Response, json
 from loguru import logger
 from utils.auth import get_clerk_user
-from utils.mongodb import get_mongo_client
+from utils.mongodb import get_database
 from bson import json_util
 
 @app.route("/user/<user_id>", methods=['GET'])
@@ -24,7 +24,7 @@ def get_user(user_id):
         return response
     
     # get user from mongodb
-    collection = get_mongo_client()["main"]["users"]
+    collection = get_database()["users"]
     user = collection.find_one({"user_id": user_id})
     
     logger.info("found user: {}", user)
