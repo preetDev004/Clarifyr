@@ -1,5 +1,4 @@
 'use client';
-import { chatBot } from '@/lib/types';
 import { getMostRecentDateString } from '@/lib/utils';
 import {
   BadgeInfo,
@@ -11,8 +10,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { Chatbot } from '@/lib/types';
 
-const ChatbotCard = ({ bot }: { bot: chatBot }) => {
+const ChatbotCard = ({ bot }: { bot: Chatbot }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -22,15 +22,14 @@ const ChatbotCard = ({ bot }: { bot: chatBot }) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* inner */}
-      <div className="flex h-[90%] w-full flex-col justify-between gap-2 rounded-lg bg-white/60 p-3 dark:bg-custom-darkblue/70">
+      <div className="relative flex h-[90%] w-full flex-col justify-between gap-2 rounded-lg bg-white/60 p-3 dark:bg-custom-darkblue/70">
+        <div className="h-xs absolute inset-x-14 top-0 z-30 rounded-b-full bg-custom-teal p-0.5 shadow-md dark:bg-custom-hoverdark" />
         {/* top */}
 
         <div className="flex items-center justify-start gap-2">
           <MonitorCog className="h-9 w-9 flex-shrink-0 rounded-full bg-teal-600/20 p-2 lg:h-10 lg:w-10" />
           <p className="font-semibold">
-            {bot.botName.length > 20
-              ? bot.botName.slice(0, 20) + '...'
-              : bot.botName}
+            {bot.name.length > 20 ? bot.name.slice(0, 20) + '...' : bot.name}
           </p>
         </div>
 
@@ -39,40 +38,44 @@ const ChatbotCard = ({ bot }: { bot: chatBot }) => {
           <p className="flex items-center gap-3 text-sm text-muted-foreground">
             <GlobeLock size={18} className="flex-shrink-0" />
             <span>
-              {bot.allowedDomains[0]}{' '}
-              {bot.allowedDomains.length > 1 && (
+              {bot.whitelist_domains[0]}{' '}
+              {bot.whitelist_domains.length > 1 && (
                 <span className="text-xs font-medium text-custom-teal dark:text-custom-hoverdark">
-                  +{bot.allowedDomains.length - 1} more
+                  +{bot.whitelist_domains.length - 1} more
                 </span>
               )}
             </span>
           </p>
-          <p className="flex items-center gap-3 text-sm text-muted-foreground">
-            <UserRoundSearch size={18} className="flex-shrink-0" />
-            <span>
-              {bot.botPersona[0]}{' '}
-              {bot.botPersona.length > 1 && (
-                <span className="text-xs font-medium text-custom-teal dark:text-custom-hoverdark">
-                  +{bot.botPersona.length - 1} more
-                </span>
-              )}
-            </span>
-          </p>
+          {bot.personality_traits && (
+            <p className="flex items-center gap-3 text-sm text-muted-foreground">
+              <UserRoundSearch size={18} className="flex-shrink-0" />
+              <span>
+                {bot.personality_traits[0]}{' '}
+                {bot.personality_traits.length > 1 && (
+                  <span className="text-xs font-medium text-custom-teal dark:text-custom-hoverdark">
+                    +{bot.personality_traits.length - 1} more
+                  </span>
+                )}
+              </span>
+            </p>
+          )}
           <p className="flex items-center gap-3 text-sm text-muted-foreground">
             <BookText size={18} className="flex-shrink-0" />
             <span>
-              {bot.selectedDocs.length}
+              {bot.expertise_docs.length}
               {' expertise docs'}
             </span>
           </p>
-          <p className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
-            <BadgeInfo size={18} className="flex-shrink-0" />
-            <span>
-              {bot.botDescription.length > 70
-                ? bot.botDescription.slice(0, 70) + '...'
-                : bot.botDescription}
-            </span>
-          </p>
+          {bot.description && (
+            <p className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
+              <BadgeInfo size={18} className="flex-shrink-0" />
+              <span>
+                {bot.description.length > 70
+                  ? bot.description.slice(0, 70) + '...'
+                  : bot.description}
+              </span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -85,7 +88,7 @@ const ChatbotCard = ({ bot }: { bot: chatBot }) => {
           transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
           <span className="text-sm text-muted-foreground">
-            {getMostRecentDateString(bot.createdAt, bot.updatedAt)}
+            {getMostRecentDateString(bot.created_at, bot.updated_at)}
           </span>
         </motion.div>
 
