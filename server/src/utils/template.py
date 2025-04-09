@@ -17,7 +17,7 @@ def read_html_template(template_name, params):
 		return ''
 	
 	for key, value in params.items():
-		template = template.replace(f"<<{key}>>", value)
+		template = template.replace("{{"+key+"}}", value)
 
 	template = obfuscate_html(template)
 	
