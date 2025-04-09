@@ -1,4 +1,4 @@
-from __main__ import app
+from app import app
 from flask import request, Response, json
 from loguru import logger
 import os

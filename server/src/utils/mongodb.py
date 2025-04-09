@@ -53,6 +53,24 @@ document_schema = {
     }
 }
 
+# chatbots_schema = {
+#     "validator": {
+#         "$jsonSchema": {
+#             "bsonType": "object",
+#             "required": ["name", "expertise_docs"],
+#             "properties": {
+#                 "name": {
+#                     "bsonType": "string"
+#                 },
+#                 "description": {
+#                     "bsonType": "string"
+#                 },
+#                 ""
+#             }
+#         }
+#     }
+# }
+
 def connect_to_db():
     global mongo_client
     try:

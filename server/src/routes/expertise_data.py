@@ -1,4 +1,4 @@
-from __main__ import app
+from app import app
 import os
 import uuid
 from datetime import datetime

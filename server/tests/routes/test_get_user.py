@@ -1,5 +1,6 @@
 import pytest
 import requests
+from utils.mongodb import get_mongo_client
 
 BASE_URL = "http://localhost:3000"
 SESSION_ID = "sess_2umNljXprzbOPAZwD8N4K8w8R20"
