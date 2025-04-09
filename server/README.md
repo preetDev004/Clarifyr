@@ -368,3 +368,72 @@ Content-Disposition: attachment; filename=lab_report.pdf
 
 ... (file data) ...
 ```
+
+## `POST /chatbot`
+
+### Description
+
+This endpoint is responsible for creating a chatbot representation in MongoDB Atlas Database. It requires a `SessionID` header to be set in the request to authenticate the user who is creating the chatbot. Chatbots have a unique constraint on their name and creator id, so no user has two chatbots with a same name.
+
+### Request
+
+**Method:** `POST`
+
+**Endpoint:** `/chatbot`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+**Body:**
+
+* **`name`**  `: string` **(Required)** - *the chatbot's name*
+* **`description`** `: string` **(Optional)** - *the chatbot's description*
+* **`welcome_message`** `: string` **(Optional)** - *the chatbot's welcome message*
+* **`personality_traits`** `: [string]` **(Optional)** - *the chatbot's personality traits*
+* **`expertise_docs`** `: [string]` **(Required)** - *the IDs of chatbot's expertise docs in MongoDB Atlas. Must be sent over as strings and be convertible to MongoDB `ObjectID`*
+* **`whitelist_domains`** `: [string]` **(Required)** - *the domains that will be able to use the chatbot*
+
+**Body Example:**
+
+```json
+{
+    "name": "my chatbot2", //required
+    "description": "my description", // optional
+    "welcome_message": "hello there!", // optional
+    "personality_traits": [ // optional
+        "Caring", "Patient", "Talkative"
+    ],
+    "expertise_docs": [ //required
+        "67d64f45f59f788106434e81",
+        "67d64fde9a82716d39dcbca1"
+    ],
+    "whitelist_domains": [ //required
+        "localhost:8080",
+        "0.0.0.0:3001"
+    ]
+}
+```
+
+### Response
+
+* **200 Ok**
+    ```json
+    {
+        "chatbot_data_url": "http://localhost:3000/chatbot/67f5ed624428a7d31929b93a"
+    }
+    ```
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+* **400 Bad Request** (Name Duplication)
+    ```json
+    {
+        "message": "You already have a chatbot with name 'my chatbot2'!"
+    }
+    ```
