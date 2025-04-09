@@ -27,6 +27,10 @@ sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-ser
 * [`POST /upload_data`](#post-upload_data)
 * [`GET /get_data`](#get-get_data)
 * [`GET /get_data/<uuid>`](#get-get_data-uuid)
+* [`POST /chatbot`](#post-chatbot)
+* [`GET /chatbots`](#get-chatbots)
+* [`GET /chatbot/<chatbot_id>`](#get-chatbotchatbot_id)
+* [`PATCH /chatbot/<chatbot_id>`](#patch-chatbotchatbot_id)
 
 ## `POST /signup`
 
@@ -368,3 +372,342 @@ Content-Disposition: attachment; filename=lab_report.pdf
 
 ... (file data) ...
 ```
+
+## `POST /chatbot`
+
+### Description
+
+This endpoint is responsible for creating a chatbot representation in MongoDB Atlas Database. It requires a `SessionID` header to be set in the request to authenticate the user who is creating the chatbot. Chatbots have a unique constraint on their name and creator id, so no user has two chatbots with a same name.
+
+### Request
+
+**Method:** `POST`
+
+**Endpoint:** `/chatbot`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+**Body:**
+
+* **`name`**  `: string` **(Required)** - *the chatbot's name*
+* **`description`** `: string` **(Optional)** - *the chatbot's description*
+* **`welcome_message`** `: string` **(Optional)** - *the chatbot's welcome message*
+* **`personality_traits`** `: [string]` **(Optional)** - *the chatbot's personality traits*
+* **`expertise_docs`** `: [string]` **(Required)** - *the IDs of chatbot's expertise docs in MongoDB Atlas. Must be sent over as strings and be convertible to MongoDB `ObjectID`*
+* **`whitelist_domains`** `: [string]` **(Required)** - *the domains that will be able to use the chatbot*
+
+**Body Example:**
+
+```json
+{
+    "name": "my chatbot2", //required
+    "description": "my description", // optional
+    "welcome_message": "hello there!", // optional
+    "personality_traits": [ // optional
+        "Caring", "Patient", "Talkative"
+    ],
+    "expertise_docs": [ //required
+        "67d64f45f59f788106434e81",
+        "67d64fde9a82716d39dcbca1"
+    ],
+    "whitelist_domains": [ //required
+        "localhost:8080",
+        "0.0.0.0:3001"
+    ]
+}
+```
+
+### Response
+
+* **200 Ok**
+    ```json
+    {
+        "chatbot_data_url": "http://localhost:3000/chatbot/67f5ed624428a7d31929b93a"
+    }
+    ```
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+* **400 Bad Request** (Name Duplication)
+    ```json
+    {
+        "message": "You already have a chatbot with name 'my chatbot2'!"
+    }
+    ```
+
+* **400 Bad Request** (One of IDs in `expertise_docs` could not be converted to MongoDB `ObjectId`)
+    ```json
+    {
+        "message": "Invalid Document ID provided for Expertise Docs"
+    }
+    ```
+
+## `GET /chatbots`
+
+### Description
+
+This endpoint returns all chatbots created by a given user. User indentity is pulled from the `SessionID` header. 
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/chatbots`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+
+### Response
+
+* **200 Ok**
+    ```json
+    [
+        {
+            "_id": {
+                "$oid": "67f5ed624428a7d31929b93a"
+            },
+            "name": "my chatbot2",
+            "description": null,
+            "welcome_message": null,
+            "personality_traits": null,
+            "expertise_docs": [
+                {
+                    "$oid": "67d64f45f59f788106434e81"
+                },
+                {
+                    "$oid": "67d64fde9a82716d39dcbca1"
+                }
+            ],
+            "whitelist_domains": [
+                "localhost:8080",
+                "0.0.0.0:3001"
+            ],
+            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        },
+        {
+            "_id": {
+                "$oid": "67f5f79d941bce2ef8e2e586"
+            },
+            "name": "my chatbot3",
+            "description": "my description",
+            "welcome_message": "hello there!",
+            "personality_traits": [
+                "Caring",
+                "Patient",
+                "Talkative"
+            ],
+            "expertise_docs": [
+                {
+                    "$oid": "67d64f45f59f788106434e81"
+                },
+                {
+                    "$oid": "67d64fde9a82716d39dcbca1"
+                }
+            ],
+            "whitelist_domains": [
+                "localhost:8080",
+                "0.0.0.0:3001"
+            ],
+            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        }
+    ]
+    ```
+
+* **200 Ok** (No chatbots created by the user)
+    ```json
+    []
+    ```
+
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+## `GET /chatbot/<chatbot_id>`
+
+### Description
+
+This endpoint returns a specific chatbot's information by a given `chatbot_id`. It only searches through chatbots created by the sender, whose identity is established from the `SessionID` header. So, if the sender tries to get another user's chatbot, it will appear is if it is simply not there.
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/chatbot/<chatbot_id>`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+
+### Response
+
+* **200 Ok**<a id="chatbot_schema"></a>
+    ```json
+    {
+        "_id": {
+            "$oid": "67f5f79d941bce2ef8e2e586"
+        },
+        "name": "my chatbot3",
+        "description": "my description",
+        "welcome_message": "hello there!",
+        "personality_traits": [
+            "Caring",
+            "Patient",
+            "Talkative"
+        ],
+        "expertise_docs": [
+            {
+                "$oid": "67d64f45f59f788106434e81"
+            },
+            {
+                "$oid": "67d64fde9a82716d39dcbca1"
+            }
+        ],
+        "whitelist_domains": [
+            "localhost:8080",
+            "0.0.0.0:3001"
+        ],
+        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+    }
+    ```
+
+* **404 Not Found** (User is not the creator of this chatbot or it does not exist at all)
+    ```json
+    {
+        "message": "No chatbot with ID '123123123123123123123123' found!"
+    }
+    ```
+
+* **400 Bad Request** (Invalid `chatbot_id` provided that could not be converted to MongoDB ObjectID, such as *`123`*)
+    ```json
+    {
+        "message": "Invalid Chatbot ID"
+    }
+    ```
+
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+## `PATCH /chatbot/<chatbot_id>`
+
+### Description
+
+This endpoint is responsible for updating a chatbot representation in MongoDB Atlas Database. It requires a `SessionID` header to be set in the request to authenticate the user who is updating the chatbot. Note that the following rules apply to the body of this request:
+
+* The body of this request is supposed to be a **partial** representation of the chatbot document in MongoDB
+* **Every** field passed in the body will be updated in the database for the document with id of `chatbot_id`
+* If any fields are **missing** from the body, they will be left unchanged
+* If the request introduces any **new fields** to the schema, they will be **disregarded** *(See [this example](#chatbot_schema) for a full chatbot schema)*
+* If any fields that are **forbidden for change** are passed in the body (such as `id`, `_id`, `name`, or `created_by`), they are **disregarded** *(See [this example](#recommended_patch_chatbot_body) for fields that can be updated with this request)*
+
+### Request
+
+**Method:** `PATCH`
+
+**Endpoint:** `/chatbot/<chatbot_id>`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+**Body:**
+
+* **`description`**  `: string` **(Optional)** - *the updated chatbot's description*
+* **`welcome_message`** `: string` **(Optional)** - *the updated chatbot's welcome_message*
+* **`personality_traits`** `: [string]` **(Optional)** - *the updated chatbot's personality traits*
+* **`expertise_docs`** `: [string]` **(Optional)** - *the updated list of IDs of chatbot's expertise docs in MongoDB Atlas. Must be sent over as strings and be convertible to MongoDB `ObjectID`*
+* **`whitelist_domains`** `: [string]` **(Optional)** - *the updated list of domains that will be able to use the chatbot*
+
+**Body Example:**<a id="recommended_patch_chatbot_body"></a>
+
+```json
+{
+    "description": null, //optional
+    "welcome_message": null, //optional
+    "personality_traits": null, //optional
+    "expertise_docs": [ //optional
+        "67d64f45f59f788106434e81",
+        "67d64fde9a82716d39dcbca1"
+    ],
+    "whitelist_domains": [ //optional
+        "localhost:8080",
+        "0.0.0.0:3001"
+    ]
+}
+```
+
+### Response
+
+* **200 Ok**
+    ```json
+    {
+        "_id": {
+            "$oid": "67f60ba2652ca18bb578055c"
+        },
+        "name": "my chatbot3",
+        "description": "updated description",
+        "welcome_message": "hello there!",
+        "personality_traits": [
+            "Caring",
+            "Patient",
+            "Talkative"
+        ],
+        "expertise_docs": [
+            {
+                "$oid": "123123123123123123123123"
+            }
+        ],
+        "whitelist_domains": [
+            "localhost:8080",
+            "0.0.0.0:3001"
+        ],
+        "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+    }
+    ```
+
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
+    }
+    ```
+
+* **400 Bad Request** (One of IDs in `expertise_docs` could not be converted to MongoDB `ObjectId`)
+    ```json
+    {
+        "message": "Invalid Document ID provided for Expertise Docs"
+    }
+    ```
+
+* **400 Bad Request** (Invalid `chatbot_id` provided that could not be converted to MongoDB ObjectID, such as *`123`*)
+    ```json
+    {
+        "message": "Invalid Chatbot ID"
+    }
+    ```
+
+* **404 Not Found** (User is not the creator of this chatbot or it does not exist at all)
+    ```json
+    {
+        "message": "No chatbot with ID '123123123123123123123123' found!"
+    }
+    ```

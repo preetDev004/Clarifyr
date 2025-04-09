@@ -1,10 +1,19 @@
+"use client"
+
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { bots } from '../../../../constants';
 import ChatbotCard from '@/components/ui/chatbot/chatbot-card';
+import { useSession } from '@clerk/nextjs';
+import { useEffect } from 'react';
 
 const MainDashboardPage = () => {
+  const { session } = useSession();
+  useEffect(() => {
+    console.log('Session:', session?.id);
+  }, [session]);
+
   return (
     <div className="mt-6 flex flex-col justify-center gap-6">
       <div className="flex items-center justify-between">

@@ -53,23 +53,34 @@ document_schema = {
     }
 }
 
-# chatbots_schema = {
-#     "validator": {
-#         "$jsonSchema": {
-#             "bsonType": "object",
-#             "required": ["name", "expertise_docs"],
-#             "properties": {
-#                 "name": {
-#                     "bsonType": "string"
-#                 },
-#                 "description": {
-#                     "bsonType": "string"
-#                 },
-#                 ""
-#             }
-#         }
-#     }
-# }
+chatbots_schema = {
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["name", "expertise_docs", "created_by", "whitelist_domains"],
+            "properties": {
+                "name": {
+                    "bsonType": "string"
+                },
+                "experitse_docs": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "objectId"
+                    }
+                },
+                "created_by": {
+                    "bsonType": "string"
+                },
+                "whitelist_domains": {
+                    "bsonType": "array",
+                    "items": {
+                        "bsonType": "string"
+                    }
+                }
+            }
+        }
+    }
+}
 
 def connect_to_db():
     global mongo_client
@@ -90,6 +101,11 @@ def connect_to_db():
             logger.info("creating the documents collection...")
             db.create_collection("documents", **document_schema)
             db["documents"].create_index([("name", 1)], unique=True)
+        if "chatbots" not in db.list_collection_names():
+            logger.info("creating the chatbots collection...")
+            db.create_collection("chatbots", **chatbots_schema)
+            db["chatbots"].create_index([("name", 1), ("created_by", 1)], unique=True)
+            
     except Exception as e:
         raise Exception("Error while connecting to the db: ", e)
 
