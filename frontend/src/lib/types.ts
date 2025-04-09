@@ -7,23 +7,25 @@ export type UserDocument = {
   createdAt: string;
 };
 
-export type chatBot = {
+// Casing and naming conventions is SNAKE here to match backend
+export interface Chatbot {
   id: string;
-  botName: string;
-  botDescription: string;
-  openingMessage: string;
-  selectedDocs: string[];
-  botPersona: string[];
-  allowedDomains: string[];
-  createdAt: string;
-  updatedAt: string;
-};
+  name: string;
+  description: string | null;
+  welcome_message: string | null;
+  personality_traits: string[] | null;
+  expertise_docs: Array<{ id: string }>;
+  whitelist_domains: string[];
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export type CreateBotFormInputs = {
-  botName: string;
-  botDescription: string;
-  openingMessage: string;
-  selectedDocs: string[];
-  botPersona: string[];
-  allowedDomains: string[];
+  name: string;
+  description: string;
+  welcome_message: string;
+  personality_traits: string[];
+  expertise_docs: string[];
+  whitelist_domains: string[];
 };

@@ -60,7 +60,7 @@ const KnowledgeBaseSection = ({
       />
       <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
         <Controller
-          name="selectedDocs"
+          name="expertise_docs"
           control={control}
           rules={{
             validate: {
@@ -182,7 +182,7 @@ const KnowledgeBaseSection = ({
                   value.length === 0
                     ? 'border border-dashed bg-gray-100 p-6 text-center dark:bg-teal-900/20'
                     : ''
-                } ${errors.selectedDocs ? 'border-red-600' : ''}`}
+                } ${errors.expertise_docs ? 'border-red-600' : ''}`}
               >
                 {value.length > 0 ? (
                   <div className="grid w-full grid-cols-1 gap-3 xl:grid-cols-2">
@@ -222,9 +222,9 @@ const KnowledgeBaseSection = ({
                     No documents selected. Browse and select up to 4 documents.
                   </p>
                 )}
-                {errors.selectedDocs && (
+                {errors.expertise_docs && (
                   <p className="bottom-0 text-xs text-red-500">
-                    {errors.selectedDocs.message}
+                    {errors.expertise_docs.message}
                   </p>
                 )}
               </div>

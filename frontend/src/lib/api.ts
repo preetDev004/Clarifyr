@@ -1,4 +1,4 @@
-import { UserDocument } from './types';
+import { CreateBotFormInputs, UserDocument } from './types';
 
 const uploadDocument = async (file: File, sessionId: string, save: boolean) => {
   try {
@@ -102,8 +102,58 @@ const getDocumentContent = async (sessionId: string, docId: string) => {
   }
 };
 
+const getAllChatbots = async (sessionId: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/chatbots`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch documents');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log('Get all chatbots failed:', error);
+    throw error;
+  }
+};
+const createChatbot = async (
+  sessionId: string,
+  chatbotData: CreateBotFormInputs
+) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/chatbot`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+      body: JSON.stringify(chatbotData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to create chatbot');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Create chatbot failed:', error);
+    throw error;
+  }
+};
 export const chatApi = {
   uploadDocument,
   getAllDocuments,
   getDocumentContent,
+  getAllChatbots,
+  createChatbot,
 };

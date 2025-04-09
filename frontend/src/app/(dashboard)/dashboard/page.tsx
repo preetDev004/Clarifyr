@@ -1,18 +1,14 @@
-"use client"
+'use client';
 
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { bots } from '../../../../constants';
 import ChatbotCard from '@/components/ui/chatbot/chatbot-card';
-import { useSession } from '@clerk/nextjs';
-import { useEffect } from 'react';
+import { useChatbots } from '@/hooks/useChatbots';
+import Loader from '@/components/ui/loader';
 
 const MainDashboardPage = () => {
-  const { session } = useSession();
-  useEffect(() => {
-    console.log('Session:', session?.id);
-  }, [session]);
+  const { chatbots, isLoading, error } = useChatbots();
 
   return (
     <div className="mt-6 flex flex-col justify-center gap-6">
@@ -32,10 +28,21 @@ const MainDashboardPage = () => {
         </Link>
       </div>
 
-      {bots.length ? (
+      {isLoading ? (
+        <div className="flex h-[50vh] items-center justify-center">
+          <Loader
+            title="Loading Chatbots"
+            description="Please wait... it may take a few seconds"
+          />
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center py-10">
+          <p className="text-red-500">{error.message}</p>
+        </div>
+      ) : chatbots.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-          {bots.map((bot, index) => (
-            <ChatbotCard key={index} bot={bot} />
+          {chatbots.map((bot) => (
+            <ChatbotCard key={bot.id} bot={bot} />
           ))}
         </div>
       ) : (

@@ -25,7 +25,7 @@ const AccessControlSection = ({
       />
       <div className="flex w-full flex-col gap-4 md:max-w-md lg:max-w-lg xl:max-w-xl">
         <Controller
-          name="allowedDomains"
+          name="whitelist_domains"
           control={control}
           rules={{
             validate: {
@@ -63,9 +63,9 @@ const AccessControlSection = ({
                 allowedDomains={value}
                 setAllowedDomains={onChange}
               />
-              {errors.allowedDomains && (
+              {errors.whitelist_domains && (
                 <p className="text-xs text-red-500">
-                  {errors.allowedDomains.message}
+                  {errors.whitelist_domains.message}
                 </p>
               )}
             </>

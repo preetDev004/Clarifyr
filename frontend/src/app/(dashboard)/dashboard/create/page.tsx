@@ -1,14 +1,27 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { CreateBotFormInputs } from '@/lib/types';
-import { ArrowLeft } from 'lucide-react';
+import AccessControlSection from '@/components/ui/chatbot/access-control-section';
 import FirstImpressionSection from '@/components/ui/chatbot/first-impression-section';
 import KnowledgeBaseSection from '@/components/ui/chatbot/knowledge-base-section';
 import PersonalitySection from '@/components/ui/chatbot/personality-section';
-import AccessControlSection from '@/components/ui/chatbot/access-control-section';
+import { EmbedScriptDialog } from '@/components/ui/chatbot/embed-script-dialog';
+import { chatApi } from '@/lib/api';
+import { CreateBotFormInputs } from '@/lib/types';
+import { useSession } from '@clerk/nextjs';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 const CreateBotPage = () => {
+  const router = useRouter();
+  const { session } = useSession();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [chatbotUrl, setChatbotUrl] = useState('');
+  const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -16,28 +29,56 @@ const CreateBotPage = () => {
     formState: { errors },
   } = useForm<CreateBotFormInputs>({
     defaultValues: {
-      selectedDocs: [],
-      botPersona: [],
-      allowedDomains: ['', ''],
+      expertise_docs: [],
+      personality_traits: [],
+      whitelist_domains: ['', ''],
+    },
+  });
+
+  const { mutate: createChatbot, isPending } = useMutation({
+    mutationFn: async (data: CreateBotFormInputs) => {
+      if (!session?.id) {
+        throw new Error('No session available');
+      }
+      return chatApi.createChatbot(session.id, data);
+    },
+    onSuccess: (data) => {
+      if (data) {
+        setChatbotUrl(data.chatbot_data_url);
+        queryClient.invalidateQueries({ queryKey: ['chatbots'] });
+        toast.success('Success', {
+          description: 'Chatbot created successfully!',
+        });
+        setShowSuccessDialog(true);
+      }
+    },
+    onError: (error: Error) => {
+      toast.error('Error', {
+        description: error.message || 'Failed to create chatbot',
+      });
     },
   });
 
   const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = (data) => {
     try {
-      const trimmedData = {
-        botName: data.botName.trim(),
-        botDescription: data.botDescription.trim(),
-        openingMessage: data.openingMessage.trim(),
-        selectedDocs: data.selectedDocs,
-        botPersona: data.botPersona,
-        allowedDomains: data.allowedDomains.filter(
+      // Convert to API format
+      const apiData: CreateBotFormInputs = {
+        name: data.name.trim(),
+        description: data.description.trim(),
+        welcome_message: data.welcome_message.trim(),
+        personality_traits: data.personality_traits,
+        expertise_docs: data.expertise_docs,
+        whitelist_domains: data.whitelist_domains.filter(
           (domain) => domain.trim() !== ''
         ),
       };
 
-      console.log(trimmedData);
+      createChatbot(apiData);
     } catch (error) {
       console.error('Submission error:', error);
+      toast.error('Error', {
+        description: 'Failed to process form data',
+      });
     }
   };
 
@@ -46,6 +87,10 @@ const CreateBotPage = () => {
       value.trim().length > 0 ||
       'This field cannot be empty or contain only spaces'
     );
+  };
+
+  const handleNavigateToDashboard = () => {
+    router.push('/dashboard');
   };
 
   return (
@@ -76,10 +121,21 @@ const CreateBotPage = () => {
 
         <AccessControlSection control={control} errors={errors} />
 
-        <Button className="flex w-fit items-end justify-end" type="submit">
-          Save & Create
+        <Button
+          className="flex w-fit items-end justify-end"
+          type="submit"
+          disabled={isPending}
+        >
+          {isPending ? 'Creating...' : 'Save & Create'}
         </Button>
       </form>
+
+      <EmbedScriptDialog
+        isOpen={showSuccessDialog}
+        scriptUrl={chatbotUrl}
+        onOpenChange={setShowSuccessDialog}
+        onContinue={handleNavigateToDashboard}
+      />
     </div>
   );
 };
