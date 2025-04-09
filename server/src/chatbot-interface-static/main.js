@@ -20,6 +20,7 @@ function attachOpenChatEvent() {
 	openChatButton.addEventListener("click", () => {
 		const chatIcon = document.querySelector('.clarifyr-open-chat-icon');
 		chatIcon.classList.add("clarifyr-hide-button-animation");
+		chatIcon.classList.remove("clarifyr-show-button-animation");
 		const chatWindow = document.querySelector(".clarifyr-chat-window");
 		chatWindow.classList.remove("clarifyr-hide-chat-animation");
 		chatWindow.classList.add("clarifyr-show-chat-animation");
@@ -31,7 +32,7 @@ function attachCloseChatEvent() {
 	closeChatButton.addEventListener("click", () => {
 		const chatIcon = document.querySelector('.clarifyr-open-chat-icon');
 		chatIcon.classList.remove("clarifyr-hide-button-animation");
-		chatIcon.classList.remove("clarifyr-show-button-animation");
+		chatIcon.classList.add("clarifyr-show-button-animation");
 		const chatWindow = document.querySelector('.clarifyr-chat-window');
 		chatWindow.classList.remove("clarifyr-show-chat-animation");
 		chatWindow.classList.add("clarifyr-hide-chat-animation");
