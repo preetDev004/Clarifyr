@@ -12,6 +12,7 @@ function injectCBInterfce() {
 
 	attachOpenChatEvent();
 	attachCloseChatEvent();
+	textInputResize();
 }
 
 function attachOpenChatEvent() {
@@ -35,6 +36,21 @@ function attachCloseChatEvent() {
 		chatWindow.classList.remove("clarifyr-show-chat-animation");
 		chatWindow.classList.add("clarifyr-hide-chat-animation");
 	});
+}
+
+function textInputResize() {
+	const textarea = document.querySelector('.clarifyr-chat-input');
+
+	function autoResize() {
+		textarea.rows = 1;
+		const lines = textarea.value.split('\n').length;
+		textarea.rows = lines;
+	}
+
+	autoResize();
+	textarea.value = '';
+
+	textarea.addEventListener('input', autoResize);
 }
 
 injectCBInterfce();

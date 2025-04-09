@@ -19,6 +19,17 @@
 			transform-origin: bottom right;
 		}
 	}
+	@keyframes pulsate {
+		0% {
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.2);
+		}
+		100% {
+			transform: scale(1);
+		}
+	}
 	.clarifyr-chat-window{
 		all: unset;
 		position: fixed;
@@ -100,16 +111,17 @@
 	}
 
 	.clarifyr-chat-input {
-		all: unset;
 		flex: 1;
 		padding: 7px 12px;
 		border: 1px solid #eee;
+		background-color: white;
+		color: #444;
 		border-radius: 20px;
 		outline: none;
 		font-size: 15px;
-		min-height: 40px;
-		height: 40px;
 		max-height: 100px;
+		resize: none;
+		white-space: pre-line;
 	}
 
 	.clarifyr-chat-input::-webkit-scrollbar {
@@ -170,6 +182,22 @@
 		align-items: center;
 		gap: 5px;
 	}
+
+	.clarifyr-typing-dot {
+		width: 8px;
+		height: 8px;
+		background: hsl(222.2 47.4% 11.2%);
+		border-radius: 50%;
+		animation: pulsate 1s infinite;
+	}
+
+	.clarifyr-typing-dot:nth-child(2) {
+		animation-delay: 0.2s;
+	}
+
+	.clarifyr-typing-dot:nth-child(3) {
+		animation-delay: 0.4s;
+	}
 </style>
 <div class="clarifyr-chat-window">
 	<div class="clarifyr-chat-header">
@@ -179,9 +207,29 @@
 		</div>
 	</div>
 	<div class="clarifyr-chat-body">
-		<div class="clarifyr-chat-messages"></div>
+		<div class="clarifyr-chat-messages">
+			<div class="clarifyr-chat-message-bot">
+				<div class="clarifyr-chat-message-text-bot">Welcome, how can I help you today?</div>
+			</div>
+			<div class="clarifyr-chat-message-user">
+				<div class="clarifyr-chat-message-text-user">Hi, what is the refund policy for the phone cases?</div>
+			</div>
+			<div class="clarifyr-chat-message-bot">
+                <div class="clarifyr-typing-container">
+                    <div class="clarifyr-typing-dot"></div>
+                    <div class="clarifyr-typing-dot"></div>
+                    <div class="clarifyr-typing-dot"></div>
+                </div>
+            </div>
+		</div>
 		<div class="clarifyr-chat-input-container">
-			<textarea type="text" class="clarifyr-chat-input" placeholder="Type a message"></textarea>
+			<textarea 
+				type="text" 
+				class="clarifyr-chat-input" 
+				placeholder="Type a message" 
+				wrap="hard"
+			>
+			</textarea>
 			<button class="clarifyr-send-button" onclick="send_message()">
 				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
 			</button>
