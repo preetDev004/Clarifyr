@@ -27,6 +27,7 @@ sudo docker run --rm -p 3000:3000 --volume ./src:/server/src --name capstone-ser
 * [`POST /upload_data`](#post-upload_data)
 * [`GET /get_data`](#get-get_data)
 * [`GET /get_data/<uuid>`](#get-get_data-uuid)
+* [`POST /chatbot`](#post-chatbot)
 
 ## `POST /signup`
 
@@ -435,5 +436,91 @@ This endpoint is responsible for creating a chatbot representation in MongoDB At
     ```json
     {
         "message": "You already have a chatbot with name 'my chatbot2'!"
+    }
+    ```
+
+## `GET /chatbots`
+
+### Description
+
+This endpoint returns all chatbots created by a given user. User indentity is pulled from the `SessionID` header. 
+
+### Request
+
+**Method:** `GET`
+
+**Endpoint:** `/chatbots`
+
+**Headers:**
+
+*   **SessionID** (Required):
+    * Contains authenticated Clerk User's session id
+
+
+### Response
+
+* **200 Ok**
+    ```json
+    [
+        {
+            "_id": {
+                "$oid": "67f5ed624428a7d31929b93a"
+            },
+            "name": "my chatbot2",
+            "description": null,
+            "welcome_message": null,
+            "personality_traits": null,
+            "expertise_docs": [
+                {
+                    "$oid": "67d64f45f59f788106434e81"
+                },
+                {
+                    "$oid": "67d64fde9a82716d39dcbca1"
+                }
+            ],
+            "whitelist_domains": [
+                "localhost:8080",
+                "0.0.0.0:3001"
+            ],
+            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        },
+        {
+            "_id": {
+                "$oid": "67f5f79d941bce2ef8e2e586"
+            },
+            "name": "my chatbot3",
+            "description": "my description",
+            "welcome_message": "hello there!",
+            "personality_traits": [
+                "Caring",
+                "Patient",
+                "Talkative"
+            ],
+            "expertise_docs": [
+                {
+                    "$oid": "67d64f45f59f788106434e81"
+                },
+                {
+                    "$oid": "67d64fde9a82716d39dcbca1"
+                }
+            ],
+            "whitelist_domains": [
+                "localhost:8080",
+                "0.0.0.0:3001"
+            ],
+            "created_by": "user_2uHaJE5qhNHwGpfDdKOFhJ3JXnv"
+        }
+    ]
+    ```
+
+* **200 Ok** (No chatbots created by the user)
+    ```json
+    []
+    ```
+
+* **400 Bad Request** (No `SessionID` header)
+    ```json
+    {
+        "message": "No Authentication Details Provided"
     }
     ```

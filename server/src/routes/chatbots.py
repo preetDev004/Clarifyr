@@ -66,3 +66,39 @@ def create_chatbot():
                 headers={"Content-Type": "application/json"}    
             )
         return response
+    
+    
+@app.route('/chatbots', methods=['GET'])
+def get_user_chatbots():
+    logger.info("GET /chatbots hit!")
+    response = None
+    auth = get_clerk_user(request.headers)
+    if not auth["successful"]:
+        return auth["response"]
+    clerk_user = auth["user"]
+    
+    # fetch the user's chatbots from db
+    collection = get_database()["chatbots"]
+    
+    try:
+        chatbots = collection.find({"created_by": clerk_user.id})
+        logger.debug("found chatbots for user {}: \n{}", clerk_user.id, chatbots)
+        
+        response = Response(
+            json_util.dumps(chatbots),
+            status=200,
+            headers={"Content-Type": "application/json"}
+        )
+        
+        return response
+    
+    except Exception as e:
+        logger.error("Error while inserting a chatbot: {}", e)
+               
+        response = Response(
+            json.dumps({"message" : "Internal Error"}),
+            status=500,
+            headers={"Content-Type": "application/json"}    
+        )
+        return response
+    
