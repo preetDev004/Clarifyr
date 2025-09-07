@@ -1,9 +1,8 @@
 import { chatApi } from '@/lib/api';
-import { useDocumentStore } from '@/store/useDocumentStore';
 import { useSession } from '@clerk/nextjs';
 import { useQuery } from '@tanstack/react-query';
 import { usePathname } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { toast } from 'sonner';
 
 // Function to fetch documents from your API with optimized data fetching
@@ -16,19 +15,25 @@ export function useDocuments(
   const { forceEnable = false, searchQuery = undefined } = options;
   const pathname = usePathname();
   const { session } = useSession();
-  const { documents, setDocuments, hasLoaded, setHasLoaded } =
-    useDocumentStore();
 
   // OPTIMIZED FETCHING STRATEGY:
-  // 1. On first load (!hasLoaded) to populate the store initially
-  // 2. On documents page (source of truth) to ensure latest data
-  // 3. When search query changes (only in enabled components)
+  // 1. On documents page (source of truth) to ensure latest data
+  // 2. When search query changes (only in enabled components)
   const isDocumentsPage = pathname === '/documents';
   const shouldFetch =
     !!session?.id &&
-    (!hasLoaded || isDocumentsPage || (!!searchQuery && forceEnable));
+    (isDocumentsPage || (!!searchQuery && forceEnable));
 
-  // Make this a reactive value that updates correctly when the documents state changes
+  // Check if there are processing documents for polling
+  const { data: documents, isLoading, error } = useQuery({
+    queryKey: ['documents', searchQuery || 'all'],
+    queryFn: () => session && chatApi.getAllDocuments(session?.id, searchQuery),
+    enabled: shouldFetch,
+    staleTime: searchQuery ? 60 * 1000 : 5 * 60 * 1000,
+    refetchOnReconnect: true,
+  });
+
+  // Check for processing documents and set up polling
   const hasProcessingDocuments = useMemo(() => {
     return documents?.some((doc) => doc.status === 'Processing') || false;
   }, [documents]);
@@ -37,43 +42,29 @@ export function useDocuments(
     return hasProcessingDocuments ? 5000 : false;
   }, [hasProcessingDocuments]);
 
-  // Either fetch for normal reasons OR keep polling for processing docs
-  const queryEnabled = shouldFetch || (!!session?.id && hasProcessingDocuments);
-
-  // Fixed query implementation
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['documents', searchQuery || 'all'],
+  // Separate query for polling when documents are processing
+  const { data: polledDocuments, isLoading: isPolling } = useQuery({
+    queryKey: ['documents-polling', searchQuery || 'all'],
     queryFn: () => session && chatApi.getAllDocuments(session?.id, searchQuery),
-    enabled: queryEnabled,
-    staleTime: searchQuery ? 60 * 1000 : 5 * 60 * 1000,
-    refetchOnReconnect: true,
+    enabled: !!session?.id && hasProcessingDocuments,
     refetchInterval,
+    staleTime: 0, // Always consider stale for polling
   });
 
-  // Move state updates outside of select function
-  useEffect(() => {
-    if (data) {
-      const sortedData = [...data].reverse();
-      setDocuments(sortedData);
-      if (!hasLoaded) {
-        setHasLoaded(true);
-      }
-    }
-  }, [data, setDocuments, hasLoaded, setHasLoaded]);
+  // Use polled data if available, otherwise use regular data
+  const finalDocuments = polledDocuments || documents;
+  const finalIsLoading = isLoading || isPolling;
 
-  // Handle error separately
-  useEffect(() => {
-    if (error) {
-      toast.error('Error', {
-        description: 'Failed to fetch documents. Please try again later.',
-      });
-    }
-  }, [error]);
+  // Handle error with toast
+  if (error) {
+    toast.error('Error', {
+      description: 'Failed to fetch documents. Please try again later.',
+    });
+  }
 
   return {
-    documents,
-    isLoading,
+    documents: finalDocuments ? [...finalDocuments].reverse() : [],
+    isLoading: finalIsLoading,
     error,
-    hasLoaded,
   };
 }

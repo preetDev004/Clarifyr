@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ChatbotCard from '@/components/ui/chatbot/chatbot-card';
 import { useChatbots } from '@/hooks/useChatbots';
 import Loader from '@/components/ui/loader';
+import { Chatbot } from '@/lib/types';
 
 const MainDashboardPage = () => {
   const { chatbots, isLoading, error } = useChatbots();
@@ -41,7 +42,7 @@ const MainDashboardPage = () => {
         </div>
       ) : chatbots.length > 0 ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-          {chatbots.map((bot) => (
+          {chatbots.map((bot: Chatbot) => (
             <ChatbotCard key={bot.id} bot={bot} />
           ))}
         </div>

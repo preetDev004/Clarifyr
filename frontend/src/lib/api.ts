@@ -57,7 +57,7 @@ const getAllDocuments = async (
 
     return await response.json();
   } catch (error) {
-    console.log('Get all documents failed:', error);
+    console.error('Get all documents failed:', error);
     throw error;
   }
 };
@@ -114,12 +114,12 @@ const getAllChatbots = async (sessionId: string) => {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch documents');
+      throw new Error('Failed to fetch chatbots');
     }
 
     return await response.json();
   } catch (error) {
-    console.log('Get all chatbots failed:', error);
+    console.error('Get all chatbots failed:', error);
     throw error;
   }
 };

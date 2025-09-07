@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
+    <SidebarProvider suppressHydrationWarning>
       <div className="flex min-h-screen w-full flex-row">
         <AppSidebar />
         <SidebarInset>
@@ -43,7 +43,9 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <HeaderActions />
           </header>
           <div className="flex w-full flex-1 flex-col gap-4 bg-muted p-4 pt-0 dark:bg-custom-darkblue">
-            <QueryProvider>{children}</QueryProvider>
+            <QueryProvider>
+              {children}
+            </QueryProvider>
           </div>
         </SidebarInset>
       </div>
