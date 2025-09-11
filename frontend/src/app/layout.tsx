@@ -4,6 +4,7 @@ import { ThemeProvider } from 'next-themes';
 import { Inter, Lexend } from 'next/font/google';
 import './globals.css';
 import Script from 'next/script';
+import QueryProvider from '@/providers/query-provider';
 
 // Load Inter with specific subsets and weights
 const inter = Inter({
@@ -51,7 +52,7 @@ export default function RootLayout({
             disableTransitionOnChange
             storageKey="clarifyr-theme"
           >
-            {children}
+            <QueryProvider>{children}</QueryProvider>
           </ThemeProvider>
         </body>
       </html>
