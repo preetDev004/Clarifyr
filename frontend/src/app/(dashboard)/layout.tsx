@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <SidebarProvider suppressHydrationWarning>
-      <div className="flex min-h-screen w-full flex-row">
+      <div className="flex min-h-screen w-full flex-row" suppressHydrationWarning>
         <AppSidebar />
         <SidebarInset>
           <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 bg-muted bg-opacity-75 backdrop-blur-lg backdrop-filter transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 dark:bg-custom-darkblue">

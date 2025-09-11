@@ -105,7 +105,6 @@ export function UploadModal({ isOpen, onClose }: UploadModalProps) {
       onClose();
     },
     onError: () => {
-      // console.error('Upload error:', error);
       toast.error('Error', {
         description: 'Failed to upload file. Please try again.',
       });

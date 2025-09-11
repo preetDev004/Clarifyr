@@ -57,8 +57,8 @@ const getAllDocuments = async (
 
     return await response.json();
   } catch (error) {
-    console.error('Get all documents failed:', error);
-    throw error;
+    console.log('Get all documents failed:', error);
+    throw new Error('Failed to fetch documents');
   }
 };
 
@@ -97,8 +97,8 @@ const getDocumentContent = async (sessionId: string, docId: string) => {
       return arrayBuffer;
     }
   } catch (error) {
-    console.error('Get document content failed:', error);
-    throw error;
+    console.log('Get document content failed:', error);
+    throw new Error('Failed to fetch document content');
   }
 };
 
@@ -119,8 +119,8 @@ const getAllChatbots = async (sessionId: string) => {
 
     return await response.json();
   } catch (error) {
-    console.error('Get all chatbots failed:', error);
-    throw error;
+    console.log('Get all chatbots failed:', error);
+    throw new Error('Failed to fetch chatbots');
   }
 };
 const createChatbot = async (
@@ -146,8 +146,8 @@ const createChatbot = async (
 
     return await response.json();
   } catch (error) {
-    console.error('Create chatbot failed:', error);
-    throw error;
+    console.log('Create chatbot failed:', error);
+    throw new Error('Failed to create chatbot');
   }
 };
 export const chatApi = {

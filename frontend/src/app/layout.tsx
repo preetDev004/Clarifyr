@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { ThemeProvider } from 'next-themes';
 import { Inter, Lexend } from 'next/font/google';
 import './globals.css';
+import Script from 'next/script';
 
 // Load Inter with specific subsets and weights
 const inter = Inter({
@@ -34,10 +35,10 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <head>
-          <script
+          <Script
             src="http://localhost:3000/chatbot_interface?cid=67f6a113db96c0ba1a521510"
-            async
-          ></script>
+            strategy="afterInteractive"
+          />
         </head>
         <body
           className={`${inter.variable} ${lexend.variable} antialiased`}

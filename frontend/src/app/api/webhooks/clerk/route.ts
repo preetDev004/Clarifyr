@@ -37,7 +37,7 @@ export async function POST(request: Request) {
       'svix-signature': svixSignature,
     }) as WebhookEvent;
   } catch (err) {
-    console.error('Error verifying webhook:', err);
+    console.log('Error verifying webhook:', err);
     return NextResponse.json({ message: 'Error occurred' }, { status: 400 });
   }
   // Handle the webhook
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
       // Not a new user's first session
       return NextResponse.json({ message: 'Session acknowledged' });
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.log('Error creating user:', error);
       return NextResponse.json(
         { message: 'Error creating user' },
         { status: 500 }

@@ -80,9 +80,8 @@ const CreateBotPage = () => {
 
       createChatbot(apiData);
     } catch (error) {
-      console.error('Submission error:', error);
-      toast.error('Error', {
-        description: 'Failed to process form data',
+      toast.error('Error Occurred', {
+        description: (error as Error).message || 'Failed to process form data',
       });
     }
   }, [createChatbot]);
