@@ -1,4 +1,10 @@
 import { AppSidebar } from '@/components/Sidebar';
+import { Toaster } from '@/components/ui/documents/sonner';
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/Sidebar/app-sidebar';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,14 +13,7 @@ import {
 } from '@/components/ui/Sidebar/breadcrumb';
 import { HeaderActions } from '@/components/ui/Sidebar/header-actions';
 import { Separator } from '@/components/ui/Sidebar/separator';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/Sidebar/app-sidebar';
 import { Metadata } from 'next';
-import QueryProvider from '@/providers/query-provider';
-import { Toaster } from '@/components/ui/documents/sonner';
 
 export const metadata: Metadata = {
   title: 'Clarifyr | Dashboard',
@@ -24,8 +23,11 @@ export const metadata: Metadata = {
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full flex-row">
+    <SidebarProvider suppressHydrationWarning>
+      <div
+        className="flex min-h-screen w-full flex-row"
+        suppressHydrationWarning
+      >
         <AppSidebar />
         <SidebarInset>
           <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-2 bg-muted bg-opacity-75 backdrop-blur-lg backdrop-filter transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 dark:bg-custom-darkblue">
@@ -43,7 +45,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
             <HeaderActions />
           </header>
           <div className="flex w-full flex-1 flex-col gap-4 bg-muted p-4 pt-0 dark:bg-custom-darkblue">
-            <QueryProvider>{children}</QueryProvider>
+            {children}
           </div>
         </SidebarInset>
       </div>

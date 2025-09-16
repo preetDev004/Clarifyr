@@ -21,7 +21,8 @@ export const PERSONA_TRAITS = [
     title: 'Creative & Engaging',
     description: 'Uses varied, interesting language styles',
   },
-];
+] as const;
+
 export const TESTIMONIALS = [
   {
     quote:

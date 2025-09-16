@@ -1,19 +1,20 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import AccessControlSection from '@/components/ui/chatbot/access-control-section';
-import FirstImpressionSection from '@/components/ui/chatbot/first-impression-section';
-import KnowledgeBaseSection from '@/components/ui/chatbot/knowledge-base-section';
-import PersonalitySection from '@/components/ui/chatbot/personality-section';
-import { EmbedScriptDialog } from '@/components/ui/chatbot/embed-script-dialog';
 import { chatApi } from '@/lib/api';
 import { CreateBotFormInputs } from '@/lib/types';
 import { useSession } from '@clerk/nextjs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense, useCallback, useMemo } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import Loader from '@/components/ui/loader';
+import FirstImpressionSection from '@/components/ui/chatbot/first-impression-section';
+import KnowledgeBaseSection from '@/components/ui/chatbot/knowledge-base-section';
+import PersonalitySection from '@/components/ui/chatbot/personality-section';
+import AccessControlSection from '@/components/ui/chatbot/access-control-section';
+import { EmbedScriptDialog } from '@/components/ui/chatbot/embed-script-dialog';
 
 const CreateBotPage = () => {
   const router = useRouter();
@@ -22,17 +23,20 @@ const CreateBotPage = () => {
   const [chatbotUrl, setChatbotUrl] = useState('');
   const queryClient = useQueryClient();
 
+  // Memoize form default values
+  const defaultValues = useMemo(() => ({
+    expertise_docs: [],
+    personality_traits: [],
+    whitelist_domains: ['', ''],
+  }), []);
+
   const {
     register,
     handleSubmit,
     control,
     formState: { errors },
   } = useForm<CreateBotFormInputs>({
-    defaultValues: {
-      expertise_docs: [],
-      personality_traits: [],
-      whitelist_domains: ['', ''],
-    },
+    defaultValues,
   });
 
   const { mutate: createChatbot, isPending } = useMutation({
@@ -59,7 +63,8 @@ const CreateBotPage = () => {
     },
   });
 
-  const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = (data) => {
+  // Memoize expensive functions
+  const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = useCallback((data) => {
     try {
       // Convert to API format
       const apiData: CreateBotFormInputs = {
@@ -75,23 +80,22 @@ const CreateBotPage = () => {
 
       createChatbot(apiData);
     } catch (error) {
-      console.error('Submission error:', error);
-      toast.error('Error', {
-        description: 'Failed to process form data',
+      toast.error('Error Occurred', {
+        description: (error as Error).message || 'Failed to process form data',
       });
     }
-  };
+  }, [createChatbot]);
 
-  const validateNotOnlyWhitespace = (value: string) => {
+  const validateNotOnlyWhitespace = useCallback((value: string) => {
     return (
       value.trim().length > 0 ||
       'This field cannot be empty or contain only spaces'
     );
-  };
+  }, []);
 
-  const handleNavigateToDashboard = () => {
+  const handleNavigateToDashboard = useCallback(() => {
     router.push('/dashboard');
-  };
+  }, [router]);
 
   return (
     <div className="mb-6 mt-6 flex flex-col justify-center gap-6 sm:mb-12">
@@ -109,17 +113,25 @@ const CreateBotPage = () => {
         onSubmit={handleSubmit(formSubmitHandler)}
         className="flex flex-col gap-4 md:container md:gap-8"
       >
-        <FirstImpressionSection
-          register={register}
-          errors={errors}
-          validateNotOnlyWhitespace={validateNotOnlyWhitespace}
-        />
+        <Suspense fallback={<Loader title="Loading form section..." description="Please wait..." />}>
+          <FirstImpressionSection
+            register={register}
+            errors={errors}
+            validateNotOnlyWhitespace={validateNotOnlyWhitespace}
+          />
+        </Suspense>
 
-        <KnowledgeBaseSection control={control} errors={errors} />
+        <Suspense fallback={<Loader title="Loading knowledge base..." description="Please wait..." />}>
+          <KnowledgeBaseSection control={control} errors={errors} />
+        </Suspense>
 
-        <PersonalitySection control={control} errors={errors} />
+        <Suspense fallback={<Loader title="Loading personality settings..." description="Please wait..." />}>
+          <PersonalitySection control={control} errors={errors} />
+        </Suspense>
 
-        <AccessControlSection control={control} errors={errors} />
+        <Suspense fallback={<Loader title="Loading access control..." description="Please wait..." />}>
+          <AccessControlSection control={control} errors={errors} />
+        </Suspense>
 
         <Button
           className="flex w-fit items-end justify-end"
@@ -130,12 +142,14 @@ const CreateBotPage = () => {
         </Button>
       </form>
 
-      <EmbedScriptDialog
-        isOpen={showSuccessDialog}
-        scriptUrl={chatbotUrl}
-        onOpenChange={setShowSuccessDialog}
-        onContinue={handleNavigateToDashboard}
-      />
+      <Suspense fallback={null}>
+        <EmbedScriptDialog
+          isOpen={showSuccessDialog}
+          scriptUrl={chatbotUrl}
+          onOpenChange={setShowSuccessDialog}
+          onContinue={handleNavigateToDashboard}
+        />
+      </Suspense>
     </div>
   );
 };

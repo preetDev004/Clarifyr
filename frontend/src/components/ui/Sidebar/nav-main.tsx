@@ -38,7 +38,7 @@ export function NavMain({
             className="group/collapsible"
           >
             <SidebarMenuItem>
-              <Link href={item.url} passHref legacyBehavior>
+              <Link href={item.url} passHref>
                 <SidebarMenuButton
                   className="hover:bg-custom-teal hover:text-white"
                   tooltip={item.title}
