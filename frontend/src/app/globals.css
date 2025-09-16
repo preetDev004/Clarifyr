@@ -212,3 +212,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Thin but visible scrollbar utility */
+.scrollbar-thin {
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/40;
+}

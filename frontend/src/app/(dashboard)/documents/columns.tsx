@@ -12,7 +12,9 @@ import {
 import { useDocumentDownload } from '@/hooks/useDocumentDownload';
 import { UserDocument } from '@/lib/types';
 import { ColumnDef } from '@tanstack/react-table';
-import { Download, Loader2, MoreVertical, Trash } from 'lucide-react';
+import { Download, Loader2, MoreVertical, ScanEye, Trash } from 'lucide-react';
+import { useState } from 'react';
+import { ViewContentModal } from '@/components/ui/documents/view-content-modal';
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -137,6 +139,7 @@ export const columns: ColumnDef<UserDocument>[] = [
 
 const DocumentActions = ({ document }: { document: UserDocument }) => {
   const { downloadDocument, isDownloading } = useDocumentDownload();
+  const [open, setOpen] = useState(false);
 
   return (
     <div className="flex justify-center">
@@ -163,14 +166,20 @@ const DocumentActions = ({ document }: { document: UserDocument }) => {
             </DropdownMenuItem>
           )}
 
-          <DropdownMenuItem
-            className="text-red-600"
-            onClick={() => console.log('Delete document', document.id)}
-          >
+          <DropdownMenuItem onClick={() => setOpen(true)}>
+            <ScanEye className="mr-2 h-4 w-4" /> View Content
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-red-600">
             <Trash className="mr-2 h-4 w-4" /> Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <ViewContentModal
+        open={open}
+        onOpenChange={setOpen}
+        documentId={document.id}
+        title={document.name}
+      />
     </div>
   );
 };
