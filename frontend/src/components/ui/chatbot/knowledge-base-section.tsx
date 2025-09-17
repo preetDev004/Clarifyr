@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import BotCardHeader from './bot-card-header';
 import { ArrowRight, BrainCircuit, Check, Plus, Search, X } from 'lucide-react';
 import { useState } from 'react';
-import { Control, Controller, FieldErrors } from 'react-hook-form';
+import { Control, Controller, FieldErrors, useWatch } from 'react-hook-form';
 import { CreateBotFormInputs } from '@/lib/types';
 import {
   Dialog,
@@ -35,9 +35,13 @@ const KnowledgeBaseSection = ({
   // Debounce the search term to avoid excessive API calls
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
+  // Watch selected docs to ensure their metadata can be displayed (e.g., edit page)
+  const selectedDocIds = useWatch({ control, name: 'expertise_docs' }) || [];
+  const hasSelectedDocs = selectedDocIds.length > 0;
+
   // Pass the debounced search term to the useDocuments hook
   const { documents: docs, isLoading } = useDocuments({
-    forceEnable: isDocumentModalOpen,
+    forceEnable: isDocumentModalOpen || hasSelectedDocs,
     searchQuery: debouncedSearchTerm,
   });
 

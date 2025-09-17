@@ -10,16 +10,19 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Chatbot } from '@/lib/types';
 
 const ChatbotCard = ({ bot }: { bot: Chatbot }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const router = useRouter();
 
   return (
     <div
       className="min-h-[280px] max-w-[400px] cursor-pointer rounded-lg border bg-teal-400/10 p-1 shadow-md transition-all duration-150 ease-in-out hover:shadow-lg dark:bg-teal-950/70"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => router.push(`/dashboard/${bot.id}/edit`)}
     >
       {/* inner */}
       <div className="relative flex h-[90%] w-full flex-col justify-between gap-2 rounded-lg bg-white/60 p-3 dark:bg-custom-darkblue/70">

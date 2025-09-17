@@ -118,6 +118,7 @@ const CreateBotPage = () => {
             register={register}
             errors={errors}
             validateNotOnlyWhitespace={validateNotOnlyWhitespace}
+            mode="create"
           />
         </Suspense>
 
