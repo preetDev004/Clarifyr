@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 8020",
+    "dev-loc": "next dev -p 8020 --hostname clarifyr.loc",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

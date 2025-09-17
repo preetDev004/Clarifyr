@@ -8,6 +8,7 @@ import routes.signup
 import routes.get_user
 import routes.chatbot_interface
 import routes.chatbots
+import routes.chatbot_communication
 
 if __name__ == '__main__':
     connect_to_db()

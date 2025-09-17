@@ -1,238 +1,276 @@
 <style>
-	@keyframes stretch-in {
-		0% {
-			transform: scale(0) translate(100%, 100%);
-			transform-origin: bottom right;
-		}
-		100% {
-			transform: scale(1) translate(0, 0);
-			transform-origin: bottom right;
-		}
-	}
-	@keyframes stretch-out {
-		0% {
-			transform: scale(1) translate(0, 0);
-			transform-origin: bottom right;
-		}
-		100% {
-			transform: scale(0) translate(100%, 100%);
-			transform-origin: bottom right;
-		}
-	}
-	@keyframes pulsate {
-		0% {
-			transform: scale(1);
-		}
-		50% {
-			transform: scale(1.2);
-		}
-		100% {
-			transform: scale(1);
-		}
-	}
-	.clarifyr-chat-window{
-		all: unset;
-		position: fixed;
-		bottom: 20px;
-		right: 20px;
-		max-width: 350px;
-		width: 90%;
-		max-height: 500px;
-		height: 90vh;
-		background: #fff;
-		border-radius: 10px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-		z-index: 9999 !important;
-		transition: all 0.5s;
-		display: flex;
-		transform: scale(0);
-		flex-direction: column;
-	}
+    @keyframes stretch-in {
+        0% {
+            transform: scale(0) translate(100%, 100%);
+            transform-origin: bottom right;
+        }
+        100% {
+            transform: scale(1) translate(0, 0);
+            transform-origin: bottom right;
+        }
+    }
+    @keyframes stretch-out {
+        0% {
+            transform: scale(1) translate(0, 0);
+            transform-origin: bottom right;
+        }
+        100% {
+            transform: scale(0) translate(100%, 100%);
+            transform-origin: bottom right;
+        }
+    }
+    @keyframes pulsate {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    .clarifyr-chat-window {
+        all: unset;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        max-width: 350px;
+        width: 90%;
+        max-height: 500px;
+        height: 90vh;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999 !important;
+        transition: all 0.5s;
+        display: flex;
+        transform: scale(0);
+        flex-direction: column;
+    }
 
-	.clarifyr-hide-chat-animation {
-		animation: unset;
-		animation: stretch-out 0.3s ease-in-out forwards;
-	}
+    .clarifyr-hide-chat-animation {
+        animation: unset;
+        animation: stretch-out 0.3s ease-in-out forwards;
+    }
 
-	.clarifyr-show-chat-animation {
-		animation: unset;
-		animation: stretch-in 0.3s ease-in-out forwards;
-	}
+    .clarifyr-show-chat-animation {
+        animation: unset;
+        animation: stretch-in 0.3s ease-in-out forwards;
+    }
 
-	.clarifyr-chat-header {
-		padding: 10px;
-		border-bottom: 1px solid #eee;
-		border-top-left-radius: 10px;
-		border-top-right-radius: 10px;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-	}
+    .clarifyr-chat-header {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-	.clarifyr-chat-body {
-		flex: 1;
-		overflow-y: hidden;
-		padding: 10px;
-		display: flex;
-		flex-direction: column;
-	}
+    .clarifyr-chat-body {
+        flex: 1;
+        overflow-y: hidden;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+    }
 
-	.clarifyr-chat-messages {
-		display: flex;
-		flex-direction: column;
-		overflow-y: auto;
-		flex: 1;
-	}
+    .clarifyr-chat-messages-container {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        flex: 1;
+    }
 
-	.clarifyr-chat-messages::-webkit-scrollbar {
-		display: none;
-	}
+    .clarifyr-chat-messages-container::-webkit-scrollbar {
+        display: none;
+    }
 
-	.clarifyr-chat-input-container {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-end;
-		padding: 10px;
-		gap: 10px;
-	}
+    .clarifyr-chat-messages {
+        display: flex;
+        flex-direction: column;
+    }
 
-	.clarifyr-chat-header-text {
-		font-size: 16px;
-		font-weight: 600;
-		padding: 4px 10px;
-		color: #444;
-	}
+    .clarifyr-chat-input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 10px;
+        gap: 10px;
+    }
 
-	.clarifyr-close-chat-button {
-		cursor: pointer;
-		color: #444;
-		font-size: 15px;
-		margin-right: 5px;
-	}
+    .clarifyr-chat-header-text {
+        font-size: 16px;
+        font-weight: 600;
+        padding: 4px 10px;
+        color: #444;
+    }
 
-	.clarifyr-chat-input {
-		flex: 1;
-		padding: 7px 12px;
-		border: 1px solid #eee;
-		background-color: white;
-		color: #444;
-		border-radius: 20px;
-		outline: none;
-		font-size: 15px;
-		max-height: 100px;
-		resize: none;
-		white-space: pre-line;
-	}
+    .clarifyr-close-chat-button {
+        cursor: pointer;
+        color: #444;
+        font-size: 15px;
+        margin-right: 5px;
+    }
 
-	.clarifyr-chat-input::-webkit-scrollbar {
-		display: none;
-	}
+    .clarifyr-chat-input {
+        flex: 1;
+        padding: 7px 12px;
+        border: 1px solid #eee;
+        background-color: white;
+        color: #444;
+        border-radius: 20px;
+        outline: none;
+        font-size: 15px;
+        max-height: 100px;
+        resize: none;
+        white-space: pre-line;
+    }
 
-	.clarifyr-send-button {
-		border: 1px solid #eee;
-		background: hsl(222.2 47.4% 11.2%);
-		color: #fff;
-		border-radius: 50%;
-		cursor: pointer;
-		outline: none;
-		height: 40px;
-		width: 40px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding-right: 2px;
-		padding-top: 2px;
-	}
+    .clarifyr-chat-input::-webkit-scrollbar {
+        display: none;
+    }
 
-	.clarifyr-chat-message-bot {
-		background: #f1f0f0;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 5px 0;
-		width: max-content;
-		max-width: 80%;
-		word-wrap: break-word;
-		border-bottom-left-radius: 0;
-	}
+    .clarifyr-send-button {
+        border: 1px solid #eee;
+        background: hsl(222.2 47.4% 11.2%);
+        color: #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+        height: 40px;
+        width: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 2px;
+        padding-top: 2px;
+    }
 
-	.clarifyr-chat-message-text-bot {
-		color: hsl(222.2 47.4% 11.2%);
-		font-size: 15px;
-	}
+    .clarifyr-chat-message-bot {
+        background: #f1f0f0;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 5px 0;
+        width: max-content;
+        max-width: 80%;
+        word-wrap: break-word;
+        border-bottom-left-radius: 0;
+    }
 
-	.clarifyr-chat-message-user {
-		background: hsl(222.2 47.4% 11.2%);
-		padding: 10px;
-		border-radius: 10px;
-		margin: 5px 0;
-		width: max-content;
-		max-width: 80%;
-		word-wrap: break-word;
-		border-bottom-right-radius: 0;
-		align-self: flex-end;
-	}
+    .clarifyr-chat-message-text-bot {
+        color: hsl(222.2 47.4% 11.2%);
+        font-size: 15px;
+    }
 
-	.clarifyr-chat-message-text-user {
-		color: #fff;
-		font-size: 15px;
-	}
+    .clarifyr-chat-message-user {
+        background: hsl(222.2 47.4% 11.2%);
+        padding: 10px;
+        border-radius: 10px;
+        margin: 5px 0;
+        width: max-content;
+        max-width: 80%;
+        word-wrap: break-word;
+        border-bottom-right-radius: 0;
+        align-self: flex-end;
+    }
 
-	.clarifyr-typing-container {
-		display: flex;
-		align-items: center;
-		gap: 5px;
-	}
+    .clarifyr-chat-message-text-user {
+        color: #fff;
+        font-size: 15px;
+    }
 
-	.clarifyr-typing-dot {
-		width: 8px;
-		height: 8px;
-		background: hsl(222.2 47.4% 11.2%);
-		border-radius: 50%;
-		animation: pulsate 1s infinite;
-	}
+    .clarifyr-typing-container {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
 
-	.clarifyr-typing-dot:nth-child(2) {
-		animation-delay: 0.2s;
-	}
+    .clarifyr-typing-dot {
+        width: 8px;
+        height: 8px;
+        background: hsl(222.2 47.4% 11.2%);
+        border-radius: 50%;
+        animation: pulsate 1s infinite;
+    }
 
-	.clarifyr-typing-dot:nth-child(3) {
-		animation-delay: 0.4s;
-	}
+    .clarifyr-typing-dot:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .clarifyr-typing-dot:nth-child(3) {
+        animation-delay: 0.4s;
+    }
 </style>
 <div class="clarifyr-chat-window">
-	<div class="clarifyr-chat-header">
-		<div class="clarifyr-chat-header-text">{{BOT_NAME}}</div>
-		<div class="clarifyr-close-chat-button">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-		</div>
-	</div>
-	<div class="clarifyr-chat-body">
-		<div class="clarifyr-chat-messages">
-			<div class="clarifyr-chat-message-bot">
-				<div class="clarifyr-chat-message-text-bot">{{WELCOME_MESSAGE}}</div>
-			</div>
-			<div class="clarifyr-chat-message-user">
-				<div class="clarifyr-chat-message-text-user">Hi, what is the refund policy for the phone cases?</div>
-			</div>
-			<div class="clarifyr-chat-message-bot">
+    <div class="clarifyr-chat-header">
+        <div class="clarifyr-chat-header-text">{{BOT_NAME}}</div>
+        <div class="clarifyr-close-chat-button">
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </div>
+    </div>
+    <div class="clarifyr-chat-body">
+        <div class="clarifyr-chat-messages-container">
+            <div class="clarifyr-chat-messages" id="clarifyr-chat-messages">
+                <div class="clarifyr-chat-message-bot">
+                    <div class="clarifyr-chat-message-text-bot">
+                        {{WELCOME_MESSAGE}}
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="clarifyr-chat-message-bot"
+                id="clarifyr-typing-message"
+                style="display: none"
+            >
                 <div class="clarifyr-typing-container">
                     <div class="clarifyr-typing-dot"></div>
                     <div class="clarifyr-typing-dot"></div>
                     <div class="clarifyr-typing-dot"></div>
                 </div>
             </div>
-		</div>
-		<div class="clarifyr-chat-input-container">
-			<textarea 
-				type="text" 
-				class="clarifyr-chat-input" 
-				placeholder="Type a message" 
-				wrap="hard"
-			>
-			</textarea>
-			<button class="clarifyr-send-button" onclick="send_message()">
-				<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-			</button>
-		</div>
-	</div>
+        </div>
+        <div class="clarifyr-chat-input-container">
+            <textarea
+                type="text"
+                class="clarifyr-chat-input"
+                placeholder="Type a message"
+                wrap="hard"
+            >
+            </textarea>
+            <button class="clarifyr-send-button" onclick="sendMessage()">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-send"
+                >
+                    <path d="m22 2-7 20-4-9-9-4Z" />
+                    <path d="M22 2 11 13" />
+                </svg>
+            </button>
+        </div>
+    </div>
 </div>
