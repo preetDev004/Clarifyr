@@ -28,3 +28,31 @@ export const useChatbots = () => {
     error,
   };
 };
+
+export const useChatbot = (chatbotId: string | undefined) => {
+  const { session } = useSession();
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['chatbot', chatbotId],
+    queryFn: () =>
+      session && chatbotId
+        ? chatApi.getChatbotById(session.id, chatbotId)
+        : undefined,
+    enabled: !!session?.id && !!chatbotId,
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+  });
+
+  if (error) {
+    toast.error('Error', {
+      description: 'Failed to fetch Chatbot. Please try again later.',
+    });
+  }
+
+  return {
+    chatbot: data,
+    isLoading,
+    error,
+  };
+};

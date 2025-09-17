@@ -150,10 +150,64 @@ const createChatbot = async (
     throw new Error('Failed to create chatbot');
   }
 };
+
+const getChatbotById = async (sessionId: string, chatbotId: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/chatbot/${chatbotId}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to fetch chatbot');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log('Get chatbot by id failed:', error);
+    throw new Error('Failed to fetch chatbot');
+  }
+};
+
+const updateChatbot = async (
+  sessionId: string,
+  chatbotId: string,
+  updates: Partial<CreateBotFormInputs>
+) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/chatbot/${chatbotId}`;
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+      body: JSON.stringify(updates),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Failed to update chatbot');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.log('Update chatbot failed:', error);
+    throw new Error('Failed to update chatbot');
+  }
+};
 export const chatApi = {
   uploadDocument,
   getAllDocuments,
   getDocumentContent,
   getAllChatbots,
   createChatbot,
+  getChatbotById,
+  updateChatbot,
 };
