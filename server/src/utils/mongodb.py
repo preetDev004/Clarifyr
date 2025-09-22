@@ -119,7 +119,7 @@ messages_schema = {
                 },
                 "role": {
                     "bsonType": "string",
-                    "enum": ["user", "bot"]
+                    "enum": ["user", "assistant"]
                 },
                 "created_at": {
                     "bsonType": "date"

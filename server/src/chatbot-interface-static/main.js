@@ -93,11 +93,17 @@ async function getChatId() {
 	}
 }
 
+function scrollToBottom() {
+	const chatMessagesContainer = document.querySelector('.clarifyr-chat-messages-container');
+	chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+}
+
 function appendMessage(message, role) {
 	const chatMessages = document.querySelector('#clarifyr-chat-messages');
 	chatMessages.appendChild(document.createElement('div'));
 	chatMessages.lastChild.classList.add('clarifyr-chat-message-' + role);
 	chatMessages.lastChild.innerHTML = `<div class="clarifyr-chat-message-text-${role}">${message}</div>`;
+	scrollToBottom();
 }
 
 function sendMessage() {
@@ -126,6 +132,7 @@ function sendMessage() {
 			typingMessage.style.display = 'none';
 			chatBox.disabled = false;
 			chatBox.style.backgroundColor = '#fff';
+			scrollToBottom();
 		});
 	})
 	.catch((error) => {
@@ -136,9 +143,9 @@ function sendMessage() {
 
 	typingMessage.style.display = 'block';
 	chatBox.value = '';
+	chatBox.rows = 1;
 	chatBox.disabled = true;
 	chatBox.style.backgroundColor = '#f1f0f0';
-	textInputResize();
 }
 
 injectCBInterfce();
