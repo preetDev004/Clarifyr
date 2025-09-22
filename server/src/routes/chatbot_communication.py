@@ -7,6 +7,7 @@ import uuid
 import json
 
 from utils.mongodb import get_database
+from utils.md_to_html import md_to_html
 from utils.safe_text import safe_text
 from utils.generate_response import generate_response
 
@@ -76,6 +77,27 @@ def send_message():
 
 	return Response(
 		json.dumps({"message": res}),
+		status=200,
+		headers=HEADERS
+	)
+
+@app.route("/get_messages", methods=['GET'])
+def get_messages():
+	logger.info("GET /get_messages hit!")
+
+	chat_id = request.args.get("chat_id")
+
+	collection = get_database()["messages"]
+
+	messages = list(collection.find({"chat_id": ObjectId(chat_id)}))
+	for message in messages:
+		message["_id"] = str(message["_id"])
+		message["created_at"] = message["created_at"].isoformat()
+		message["chat_id"] = str(message["chat_id"])
+		message["message"] = md_to_html(message["message"])
+	
+	return Response(
+		json.dumps({"messages": messages}),
 		status=200,
 		headers=HEADERS
 	)

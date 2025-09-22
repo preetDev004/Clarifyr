@@ -35,6 +35,7 @@ tools = [
 ]
 
 def add_system_prompt(input_list, chatbot):
+    # Add the system prompt to the input list
     return [
         {
             "role": "system",
@@ -49,23 +50,11 @@ def add_system_prompt(input_list, chatbot):
     ] + input_list
 
 def filter_input_list(input_list, limit=5):
+    # Handle context a simple sliding window
     if len(input_list) < limit:
         return input_list
-
-    if input_list[-1]["role"] != "user":
-        return input_list
-
-    encoded_list = embedder_model.encode(input_list)
-    message_embedding = encoded_list[-1]
-
-    result = []
-
-    for message, embedding in zip(input_list, encoded_list):
-        distance = cosine_similarity(message_embedding, embedding)
-        if distance > 0.5:
-            result.append(message)
-
-    return result
+    
+    return input_list[-limit:]
 
 def generate_response(input_list, chatbot, chat_id):
     messages_collection = get_database()["messages"]
@@ -75,24 +64,25 @@ def generate_response(input_list, chatbot, chat_id):
     expertise_docs = chatbot["expertise_docs"]
     expertise_docs = list(map(lambda x: documents_collection.find_one({"_id": ObjectId(x)})["name"], expertise_docs))
 
-    tool_choice = "required"
     input_list = filter_input_list(input_list)
 
     while True:
+        # Generate the response
         response = llm.responses.create(
             model="gpt-4o-mini",
             input=add_system_prompt(input_list, chatbot),
             tools=tools,
-            tool_choice=tool_choice,
+            tool_choice="auto",
         )
-        tool_choice = "auto"
 
         input_list += response.output
         tool_calls = []
 
+        # Look for tool calls
         for item in response.output:
             if item.type == "function_call":
                 if item.name == "search_knowledge_base":
+                    # Search the knowledge base
                     args = json.loads(item.arguments)
                     context = search_context(args["queries"], expertise_docs)
 
@@ -104,6 +94,7 @@ def generate_response(input_list, chatbot, chat_id):
                         }),
                     })
 
+        # If there are tool calls, add them to the input list
         if len(tool_calls) > 0:
             input_list += tool_calls
         else:
