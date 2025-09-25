@@ -21,11 +21,14 @@ export function useDocuments(
   // 2. When search query changes (only in enabled components)
   const isDocumentsPage = pathname === '/documents';
   const shouldFetch =
-    !!session?.id &&
-    (isDocumentsPage || (!!searchQuery && forceEnable));
+    !!session?.id && (isDocumentsPage || (!!searchQuery && forceEnable));
 
   // Check if there are processing documents for polling
-  const { data: documents, isLoading, error } = useQuery({
+  const {
+    data: documents,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['documents', searchQuery || 'all'],
     queryFn: () => session && chatApi.getAllDocuments(session?.id, searchQuery),
     enabled: shouldFetch,
