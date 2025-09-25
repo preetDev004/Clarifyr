@@ -1,4 +1,6 @@
 function injectCBInterfce() {
+	window.clarifyrChatbotId = '<<CHATBOT_ID>>';
+
 	const container = document.createElement("div");
 	container.id = "clarifyr-open-chat-icon";
 	container.innerHTML = `<<OPEN_CHAT_BUTTON>>`;
@@ -12,7 +14,12 @@ function injectCBInterfce() {
 
 	attachOpenChatEvent();
 	attachCloseChatEvent();
+	attachEnterEvent();
+	attachEndChatEvent();
+	attachYesEndChatEvent();
+	attachNoEndChatEvent();
 	textInputResize();
+	getMessages();
 }
 
 function attachOpenChatEvent() {
@@ -29,13 +36,70 @@ function attachOpenChatEvent() {
 
 function attachCloseChatEvent() {
 	const closeChatButton = document.querySelector(".clarifyr-close-chat-button");
-	closeChatButton.addEventListener("click", () => {
-		const chatIcon = document.querySelector('.clarifyr-open-chat-icon');
-		chatIcon.classList.remove("clarifyr-hide-button-animation");
-		chatIcon.classList.add("clarifyr-show-button-animation");
+	closeChatButton.addEventListener("click", closeChat);
+}
+
+function closeChat() {
+	const chatIcon = document.querySelector('.clarifyr-open-chat-icon');
+	chatIcon.classList.remove("clarifyr-hide-button-animation");
+	chatIcon.classList.add("clarifyr-show-button-animation");
+	const chatWindow = document.querySelector('.clarifyr-chat-window');
+	chatWindow.classList.remove("clarifyr-show-chat-animation");
+	chatWindow.classList.add("clarifyr-hide-chat-animation");
+	const chatConfirmation = document.querySelector('.clarifyr-end-chat-confirmation');
+	chatConfirmation.style.display = "none";
+}
+
+function attachEnterEvent() {
+	const chatInput = document.querySelector('.clarifyr-chat-input');
+	chatInput.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter' && !event.shiftKey && chatInput.focus) {
+			event.preventDefault();
+			sendMessage();
+		}
+	});
+}
+
+function attachEndChatEvent() {
+	const endChatButton = document.querySelector(".clarifyr-end-chat-button");
+	endChatButton.addEventListener("click", () => {
+		const chatConfirmation = document.querySelector('.clarifyr-end-chat-confirmation');
+		chatConfirmation.style.display = "flex";
+	});
+}
+
+function attachNoEndChatEvent() {
+	const noEndChatButton = document.querySelector(".clarifyr-end-chat-confirmation-button:nth-child(2)");
+	noEndChatButton.addEventListener("click", () => {
+		const chatConfirmation = document.querySelector('.clarifyr-end-chat-confirmation');
+		chatConfirmation.style.display = "none";
+	});
+}
+
+function attachYesEndChatEvent() {
+	const yesEndChatButton = document.querySelector(".clarifyr-end-chat-confirmation-button:nth-child(1)");
+	yesEndChatButton.addEventListener("click", () => {
+		const chatConfirmation = document.querySelector('.clarifyr-end-chat-confirmation');
+		chatConfirmation.style.display = "none";
 		const chatWindow = document.querySelector('.clarifyr-chat-window');
 		chatWindow.classList.remove("clarifyr-show-chat-animation");
 		chatWindow.classList.add("clarifyr-hide-chat-animation");
+
+		localStorage.removeItem('clarifyr-chat-id');
+		const textInput = document.querySelector('.clarifyr-chat-input');
+		textInput.value = '';
+		textInput.rows = 1;
+		textInput.disabled = false;
+		textInput.style.backgroundColor = '#fff';
+
+		const chatMessages = document.querySelector('#clarifyr-chat-messages');
+		const welcomeMessage = chatMessages.querySelector('.welcome-message');
+		const disclaimer = chatMessages.querySelector('.clarifyr-chat-disclaimer');
+		chatMessages.innerHTML = '';
+		chatMessages.appendChild(disclaimer);
+		chatMessages.appendChild(welcomeMessage);
+
+		closeChat();
 	});
 }
 
@@ -52,6 +116,119 @@ function textInputResize() {
 	textarea.value = '';
 
 	textarea.addEventListener('input', autoResize);
+}
+
+async function getChatId() {
+	const chatId = localStorage.getItem('clarifyr-chat-id');
+
+	if (!chatId) {
+		try {
+			const response = await fetch('http://localhost:3000/start_new_chat?cid=' + window.clarifyrChatbotId, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
+			const data = await response.json();
+			localStorage.setItem('clarifyr-chat-id', data.uuid);
+		} catch (error) {
+			localStorage.removeItem('clarifyr-chat-id');
+		}
+	}
+}
+
+function scrollToBottom() {
+	const chatMessagesContainer = document.querySelector('.clarifyr-chat-messages-container');
+	chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+}
+
+function appendMessage(message, role) {
+	const chatMessages = document.querySelector('#clarifyr-chat-messages');
+	const textInput = document.querySelector('.clarifyr-chat-input');
+	chatMessages.appendChild(document.createElement('div'));
+	chatMessages.lastChild.classList.add('clarifyr-chat-message-' + role);
+	chatMessages.lastChild.innerHTML = `<div class="clarifyr-chat-message-text-${role}">${message}</div>`;
+	textInput.focus();
+	scrollToBottom();
+}
+
+async function sendMessage() {
+	const typingMessage = document.querySelector('#clarifyr-typing-message');
+	const chatMessages = document.querySelector('#clarifyr-chat-messages');
+	const chatBox = document.querySelector('.clarifyr-chat-input');
+
+	const message = chatBox.value;
+	let chatId = localStorage.getItem('clarifyr-chat-id');
+
+	if (!chatId) {
+		await getChatId();
+		chatId = localStorage.getItem('clarifyr-chat-id');
+	}
+
+	appendMessage(message, 'user');
+
+	fetch('http://localhost:3000/send_message', {
+		method: 'POST',
+		body: JSON.stringify({
+			message: message,
+			chat_id: chatId
+		}),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+	.then((response) => {
+		response.json().then((data) => {
+			appendMessage(data.message, 'bot');
+			typingMessage.style.display = 'none';
+			chatBox.disabled = false;
+			chatBox.style.backgroundColor = '#fff';
+			scrollToBottom();
+		});
+	})
+	.catch((error) => {
+		typingMessage.style.display = 'none';
+		chatBox.disabled = false;
+		chatBox.style.backgroundColor = '#fff';
+	});
+
+	typingMessage.style.display = 'block';
+	chatBox.value = '';
+	chatBox.rows = 1;
+	chatBox.disabled = true;
+	chatBox.style.backgroundColor = '#f1f0f0';
+	scrollToBottom();
+}
+
+function getMessages() {
+	const chatId = localStorage.getItem('clarifyr-chat-id');
+
+	if (!chatId) {
+		return;
+	}
+
+	fetch('http://localhost:3000/get_messages?chat_id=' + chatId, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+	.then((response) => {
+		response.json().then((data) => {
+			data.messages.forEach((message) => {
+				appendMessage(message.message, message.role === 'assistant' ? 'bot' : 'user');
+			});
+			scrollToBottom();
+		});
+	})
+	.catch((error) => {
+		console.error('Error:', error);
+	});
 }
 
 injectCBInterfce();

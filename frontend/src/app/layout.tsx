@@ -37,7 +37,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <head>
           <Script
-            src="http://localhost:3000/chatbot_interface?cid=67f6a113db96c0ba1a521510"
+            src="http://localhost:3000/chatbot_interface?cid=68cb21ca721da045f6cd9198"
             strategy="afterInteractive"
           />
         </head>

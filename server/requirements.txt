@@ -10,3 +10,6 @@ pymongo
 nltk
 sentence-transformers
 qdrant-client[fastembed]
+openai
+markdown
+numpy

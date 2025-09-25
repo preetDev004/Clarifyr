@@ -93,7 +93,9 @@ def get_chatbot_interface():
 		"CHAT_WINDOW": read_html_template('chat-window', {
 			"BOT_NAME": chatbot["name"],
 			"WELCOME_MESSAGE": chatbot["welcome_message"]
-		})
+		}),
+		"SERVER_URL": os.getenv('API_URL'),
+		"CHATBOT_ID": cid
 	})
 
 	js_content = obfuscate_js(js_content)

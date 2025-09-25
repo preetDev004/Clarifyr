@@ -88,6 +88,47 @@ chatbots_schema = {
     }
 }
 
+chats_schema = {
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["created_at", "chatbot_id"],
+            "properties": {
+                "created_at": {
+                    "bsonType": "date"
+                },
+                "chatbot_id": {
+                    "bsonType": "objectId"
+                },
+            }
+        }
+    }
+}
+
+messages_schema = {
+    "validator": {
+        "$jsonSchema": {
+            "bsonType": "object",
+            "required": ["chat_id", "message", "role", "created_at"],
+            "properties": {
+                "chat_id": {
+                    "bsonType": "objectId"
+                },
+                "message": {
+                    "bsonType": "string"
+                },
+                "role": {
+                    "bsonType": "string",
+                    "enum": ["user", "assistant"]
+                },
+                "created_at": {
+                    "bsonType": "date"
+                }
+            }
+        }
+    }
+}
+
 def connect_to_db():
     global mongo_client
     try:
@@ -111,6 +152,13 @@ def connect_to_db():
             logger.info("creating the chatbots collection...")
             db.create_collection("chatbots", **chatbots_schema)
             db["chatbots"].create_index([("name", 1), ("created_by", 1)], unique=True)
+        if "chats" not in db.list_collection_names():
+            logger.info("creating the chats collection...")
+            db.create_collection("chats", **chats_schema)
+        if "messages" not in db.list_collection_names():
+            logger.info("creating the messages collection...")
+            db.create_collection("messages", **messages_schema)
+            db["messages"].create_index([("chat_id", 1), ("created_at", 1)])
             
     except Exception as e:
         raise Exception("Error while connecting to the db: ", e)
