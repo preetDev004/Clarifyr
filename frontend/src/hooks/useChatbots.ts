@@ -6,7 +6,11 @@ import { toast } from 'sonner';
 export const useChatbots = () => {
   const { session } = useSession();
 
-  const { data: chatbots, isLoading, error } = useQuery({
+  const {
+    data: chatbots,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['chatbots'],
     queryFn: () => session && chatApi.getAllChatbots(session?.id),
     enabled: !!session?.id,

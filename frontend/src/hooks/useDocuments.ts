@@ -25,10 +25,14 @@ export function useDocuments(
   // - forceEnable is true (e.g., consumers that need docs outside documents page)
   // - a search query is provided (typeahead scenarios)
   const shouldFetch =
-    !!session?.id && (isDocumentsPage || forceEnable || !!searchQuery);
+    !!session?.id && (isDocumentsPage || (!!searchQuery && forceEnable));
 
   // Check if there are processing documents for polling
-  const { data: documents, isLoading, error } = useQuery({
+  const {
+    data: documents,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['documents', searchQuery || 'all'],
     queryFn: () => session && chatApi.getAllDocuments(session?.id, searchQuery),
     enabled: shouldFetch,

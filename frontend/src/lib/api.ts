@@ -102,6 +102,32 @@ const getDocumentContent = async (sessionId: string, docId: string) => {
   }
 };
 
+const getDocumentText = async (sessionId: string, docId: string) => {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/get_data/${docId}?type=text`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        SessionID: sessionId,
+      },
+      mode: 'cors',
+    });
+
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(
+        message || `Failed to fetch document text: ${response.status}`
+      );
+    }
+
+    const text = await response.text();
+    return text as string;
+  } catch (error) {
+    console.log('Get document text failed:', error);
+    throw new Error('Failed to fetch document text');
+  }
+};
+
 const getAllChatbots = async (sessionId: string) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/chatbots`;
@@ -206,6 +232,7 @@ export const chatApi = {
   uploadDocument,
   getAllDocuments,
   getDocumentContent,
+  getDocumentText,
   getAllChatbots,
   createChatbot,
   getChatbotById,

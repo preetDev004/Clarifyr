@@ -1,5 +1,9 @@
 import { auth } from '@clerk/nextjs/server';
-import { QueryClient, dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import {
+  QueryClient,
+  dehydrate,
+  HydrationBoundary,
+} from '@tanstack/react-query';
 import { chatApi } from '@/lib/api';
 import DocumentsClient from './DocumentsClient';
 

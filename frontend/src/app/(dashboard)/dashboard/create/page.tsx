@@ -24,11 +24,14 @@ const CreateBotPage = () => {
   const queryClient = useQueryClient();
 
   // Memoize form default values
-  const defaultValues = useMemo(() => ({
-    expertise_docs: [],
-    personality_traits: [],
-    whitelist_domains: ['', ''],
-  }), []);
+  const defaultValues = useMemo(
+    () => ({
+      expertise_docs: [],
+      personality_traits: [],
+      whitelist_domains: ['', ''],
+    }),
+    []
+  );
 
   const {
     register,
@@ -64,27 +67,31 @@ const CreateBotPage = () => {
   });
 
   // Memoize expensive functions
-  const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = useCallback((data) => {
-    try {
-      // Convert to API format
-      const apiData: CreateBotFormInputs = {
-        name: data.name.trim(),
-        description: data.description.trim(),
-        welcome_message: data.welcome_message.trim(),
-        personality_traits: data.personality_traits,
-        expertise_docs: data.expertise_docs,
-        whitelist_domains: data.whitelist_domains.filter(
-          (domain) => domain.trim() !== ''
-        ),
-      };
+  const formSubmitHandler: SubmitHandler<CreateBotFormInputs> = useCallback(
+    (data) => {
+      try {
+        // Convert to API format
+        const apiData: CreateBotFormInputs = {
+          name: data.name.trim(),
+          description: data.description.trim(),
+          welcome_message: data.welcome_message.trim(),
+          personality_traits: data.personality_traits,
+          expertise_docs: data.expertise_docs,
+          whitelist_domains: data.whitelist_domains.filter(
+            (domain) => domain.trim() !== ''
+          ),
+        };
 
-      createChatbot(apiData);
-    } catch (error) {
-      toast.error('Error Occurred', {
-        description: (error as Error).message || 'Failed to process form data',
-      });
-    }
-  }, [createChatbot]);
+        createChatbot(apiData);
+      } catch (error) {
+        toast.error('Error Occurred', {
+          description:
+            (error as Error).message || 'Failed to process form data',
+        });
+      }
+    },
+    [createChatbot]
+  );
 
   const validateNotOnlyWhitespace = useCallback((value: string) => {
     return (
@@ -113,7 +120,14 @@ const CreateBotPage = () => {
         onSubmit={handleSubmit(formSubmitHandler)}
         className="flex flex-col gap-4 md:container md:gap-8"
       >
-        <Suspense fallback={<Loader title="Loading form section..." description="Please wait..." />}>
+        <Suspense
+          fallback={
+            <Loader
+              title="Loading form section..."
+              description="Please wait..."
+            />
+          }
+        >
           <FirstImpressionSection
             register={register}
             errors={errors}
@@ -122,15 +136,36 @@ const CreateBotPage = () => {
           />
         </Suspense>
 
-        <Suspense fallback={<Loader title="Loading knowledge base..." description="Please wait..." />}>
+        <Suspense
+          fallback={
+            <Loader
+              title="Loading knowledge base..."
+              description="Please wait..."
+            />
+          }
+        >
           <KnowledgeBaseSection control={control} errors={errors} />
         </Suspense>
 
-        <Suspense fallback={<Loader title="Loading personality settings..." description="Please wait..." />}>
+        <Suspense
+          fallback={
+            <Loader
+              title="Loading personality settings..."
+              description="Please wait..."
+            />
+          }
+        >
           <PersonalitySection control={control} errors={errors} />
         </Suspense>
 
-        <Suspense fallback={<Loader title="Loading access control..." description="Please wait..." />}>
+        <Suspense
+          fallback={
+            <Loader
+              title="Loading access control..."
+              description="Please wait..."
+            />
+          }
+        >
           <AccessControlSection control={control} errors={errors} />
         </Suspense>
 
