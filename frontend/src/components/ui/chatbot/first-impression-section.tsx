@@ -10,12 +10,16 @@ interface FirstImpressionSectionProps {
   register: UseFormRegister<CreateBotFormInputs>;
   errors: FieldErrors<CreateBotFormInputs>;
   validateNotOnlyWhitespace: (value: string) => boolean | string;
+  mode?: 'create' | 'edit';
+  initialName?: string;
 }
 
 const FirstImpressionSection = ({
   register,
   errors,
   validateNotOnlyWhitespace,
+  mode = 'create',
+  initialName,
 }: FirstImpressionSectionProps) => {
   return (
     <div className="border-1 flex flex-col gap-4 rounded-md border bg-white/20 bg-opacity-75 p-4 shadow-md dark:bg-teal-900/10 sm:p-6 md:flex-row md:items-start md:justify-between">
@@ -32,33 +36,45 @@ const FirstImpressionSection = ({
             Bot Name
           </label>
           <div className="relative">
-            <Input
-              {...register('name', {
-                required: 'Bot name is required',
-                validate: {
-                  notEmpty: validateNotOnlyWhitespace,
-                  minLength: (value) =>
-                    value.trim().length >= 3 ||
-                    'Bot name must be at least 3 characters long',
-                  maxLength: (value) =>
-                    value.trim().length <= 50 ||
-                    'Bot name cannot exceed 50 characters',
-                },
-              })}
-              placeholder="e.g. Chatty Charlie"
-              className={`w-full ${
-                errors.name
-                  ? 'border border-red-500 focus:border-red-500'
-                  : 'border border-input'
-              } `}
-              id="bot-name"
-            />
-            {errors.name && (
-              <div className="absolute h-0 w-full">
-                <p className="absolute mt-1 text-xs text-red-500">
-                  {errors.name.message}
-                </p>
-              </div>
+            {mode === 'edit' ? (
+              <Input
+                value={initialName || ''}
+                disabled
+                placeholder="Bot name"
+                className={`w-full border border-input opacity-70`}
+                id="bot-name"
+              />
+            ) : (
+              <>
+                <Input
+                  {...register('name', {
+                    required: 'Bot name is required',
+                    validate: {
+                      notEmpty: validateNotOnlyWhitespace,
+                      minLength: (value) =>
+                        value.trim().length >= 3 ||
+                        'Bot name must be at least 3 characters long',
+                      maxLength: (value) =>
+                        value.trim().length <= 50 ||
+                        'Bot name cannot exceed 50 characters',
+                    },
+                  })}
+                  placeholder="e.g. Chatty Charlie"
+                  className={`w-full ${
+                    errors.name
+                      ? 'border border-red-500 focus:border-red-500'
+                      : 'border border-input'
+                  } `}
+                  id="bot-name"
+                />
+                {errors.name && (
+                  <div className="absolute h-0 w-full">
+                    <p className="absolute mt-1 text-xs text-red-500">
+                      {errors.name.message}
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

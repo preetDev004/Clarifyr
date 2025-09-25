@@ -20,6 +20,10 @@ export function useDocuments(
   // 1. On documents page (source of truth) to ensure latest data
   // 2. When search query changes (only in enabled components)
   const isDocumentsPage = pathname === '/documents';
+  // Fetch when:
+  // - On documents page (source of truth)
+  // - forceEnable is true (e.g., consumers that need docs outside documents page)
+  // - a search query is provided (typeahead scenarios)
   const shouldFetch =
     !!session?.id && (isDocumentsPage || (!!searchQuery && forceEnable));
 
