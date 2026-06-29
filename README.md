@@ -1,8 +1,6 @@
 # Clarifyr
 
-## Demo
-
-[clarifyr - video_presentation]([url](https://www.youtube.com/watch?v=8IuvCANgKfo))
+[Demo_Video](https://www.youtube.com/watch?v=8IuvCANgKfo)
 
 ## Developers
 
